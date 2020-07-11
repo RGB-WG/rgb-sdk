@@ -64,8 +64,8 @@ public class MainApplication extends Application implements ReactApplication {
       final String network = "testnet";
 
       final HashMap contractEndpoints = new HashMap();
-      contractEndpoints.put("Fungible", String.format("ipc:%s/%s/fungibled.rpc", datadir, network));
-      this.runtime = new Runtime(network, String.format("ipc:%s/%s/stashd.rpc", datadir, network), contractEndpoints, true, datadir);
+      contractEndpoints.put("Fungible", String.format("inproc://fungibled", datadir, network));
+      this.runtime = new Runtime(network, String.format("inproc://stashd", datadir, network), contractEndpoints, true, datadir);
   }
 
   /**

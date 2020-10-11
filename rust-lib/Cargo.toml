@@ -17,9 +17,9 @@ openssl = { version = "^0.10", features = ["vendored"] }
 [dependencies]
 log = "0.4"
 rgb_node = { git = "https://github.com/LNP-BP/rgb-node", branch = "master" }
-serde = { version = "~1.0", features = ["derive"] }
-serde_with = "1.4"
-serde_json = "~1.0"
+serde = { version = "~1.0.111", features = ["derive"] }
+serde_with = "~1.5.0"
+serde_json = "~1.0.55"
 
 [patch.crates-io]
 # We need this b/c of breaking change in tagged hash type generation
@@ -33,6 +33,10 @@ zeromq-src = { git = "https://github.com/LNP-BP/zeromq-src-rs", branch = "fix/cm
 
 [target.'cfg(target_os="android")'.dependencies]
 android_logger = "~0.8.6"
+
+[target.'cfg(target_os="android")'.dependencies.zmq]
+version = "~0.9.2"
+features = ["vendored"]
 
 [target.'cfg(not(target_os="android"))'.dependencies]
 env_logger = "~0.7.1"

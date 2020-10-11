@@ -6,19 +6,19 @@ plus some sample applications
 ## Building RGB SDK
 
 ```shell script
-cd rust-ffi
+cd rust-lib
 cargo lipo
 cargo lipo --release
 ```
 
-Then check гыу `rust-ffi/target/universal/release/rgb.a` in any application integration.
+Then check гыу `rust-lib/target/universal/release/rgb.a` in any application integration.
 
 ## Language bindings
 
 The following bindings are available:
-- [Android](/rust-ffi/android)
-- [iOS](/rust-ffi/ios)
-- [Node.js](/rust-ffi/nodejs)
+- [Android](/ffi/android)
+- [iOS](/ffi/ios)
+- [Node.js](/ffi/nodejs)
 
 ## Developer guidelines
 

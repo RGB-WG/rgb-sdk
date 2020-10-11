@@ -11,6 +11,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "node-gyp": "^5.1.1"
+    "node-gyp": "^7.1.0"
   }
 }

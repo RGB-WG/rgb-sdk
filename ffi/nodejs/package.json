@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "preinstall": "cargo build && swig -javascript -node -c++ swig.i",
+    "preinstall": "cargo build --manifest-path ../../rust-lib/Cargo.toml && swig -javascript -node -c++ swig.i",
     "install": "node ./node_modules/node-gyp/bin/node-gyp.js rebuild"
   },
   "author": "",

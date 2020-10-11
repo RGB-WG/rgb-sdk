@@ -1,4 +1,4 @@
-const ex = require('./build/Release/rgb_node');
+const ex = require('../../ffi/nodejs/build/Release/rgb_node');
 
 const config = {
     network: "testnet",

@@ -1,6 +1,6 @@
 %module rgb_node
 %{
-#include "../rgb_node.h"
+#include "../../rust-lib/rgb_node.h"
 %}
 
 %typemap(out) CResult (v8::Local<v8::Promise::Resolver> resolver) %{
@@ -18,4 +18,4 @@
     $result = resolver->GetPromise();
 %}
 
-%include "../rgb_node.h"
+%include "../../rust-lib/rgb_node.h"

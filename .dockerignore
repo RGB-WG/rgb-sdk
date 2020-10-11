@@ -1,0 +1,13 @@
+**/*.a
+**/*.node
+**/*.rs.bk
+**/*.so
+**/*.swo
+**/*.swp
+**/node_modules
+**/package-lock.json
+**/swig_wrap.cxx
+/ffi/nodejs/build
+/ffi/nodejs/Dockerfile
+/rust-lib/rgb_node.h
+/rust-lib/target

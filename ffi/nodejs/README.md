@@ -20,8 +20,10 @@ node example.js
 ### In docker
 
 ```bash
-docker build -f ffi/nodejs/Dockerfile -t rgb-nodejs .
-docker run -it --rm -v $(pwd):/opt/mount --entrypoint cp \
-    rgb-nodejs \
-    /rgb-node/target/debug/librgb.so /rgb-node/rgb_node.node /opt/mount/
+docker build -f ffi/nodejs/Dockerfile -t rgb-sdk-nodejs .
+mkdir -p rust-lib/target/debug ffi/nodejs/build/Release
+docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
+    rgb-sdk-nodejs \
+    -c 'cp /rgb-sdk/target/debug/librgb.so /opt/mount/rust-lib/target/debug/librgb.so \
+    && cp /rgb-sdk/rgb_node.node /opt/mount/ffi/nodejs/build/Release/rgb_node.node'
 ```

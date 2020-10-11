@@ -1,8 +1,7 @@
 FROM rustlang/rust:nightly-slim as builder
 
-COPY ffi /rgb-node/ffi
-COPY src /rgb-node/src
-COPY Cargo.lock Cargo.toml README.md /rgb-node/
+COPY ffi/nodejs /rgb-sdk/ffi/nodejs
+COPY rust-lib /rgb-sdk/rust-lib
 
 RUN apt-get update -y \
     && apt-get install -y \
@@ -30,7 +29,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | 
     nvm install v10 --lts && \
     nvm alias default v10
 
-WORKDIR /rgb-node/ffi/nodejs
+WORKDIR /rgb-sdk/ffi/nodejs
 
 RUN . $HOME/.nvm/nvm.sh && npm install --unsafe-perm
 
@@ -46,10 +45,9 @@ RUN apt-get update -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -pv /rgb-node/target/debug/
-RUN mkdir -pv /rgb-node/ffi/nodejs/
+RUN mkdir -p /rgb-sdk/target/debug/ /rgb-sdk/ffi/nodejs/
 
-COPY --from=builder /rgb-node/ffi/nodejs/build/Release/rgb_node.node /rgb-node
-COPY --from=builder /rgb-node/target/debug/librgb.so /rgb-node/target/debug/
+COPY --from=builder /rgb-sdk/ffi/nodejs/build/Release/rgb_node.node /rgb-sdk/
+COPY --from=builder /rgb-sdk/rust-lib/target/debug/librgb.so /rgb-sdk/target/debug/
 
-WORKDIR /rgb-node/
+WORKDIR /rgb-sdk/

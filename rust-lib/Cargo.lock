@@ -1498,6 +1498,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
+ "zmq",
 ]
 
 [[package]]

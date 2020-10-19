@@ -5,7 +5,7 @@
 * Install Swig 4.0
 * Install cmake (used to build zmq)
 * Install the Android SDK and export the env variable `ANDROID_SDK_ROOT` to its base path
-* Install the Android NDK (version `20.0.5594570`) and export the env variable `NDK_HOME` to its base path
+* Install the Android NDK (version `20.1.5948944`) and export the env variable `NDK_HOME` to its base path
 * Install the four cargo targets:
 ```
 rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-androideabi i686-linux-android

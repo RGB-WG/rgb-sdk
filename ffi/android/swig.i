@@ -1,6 +1,6 @@
 %module rgb_node
 %{
-#include "../../rgb_node.h"
+#include "../../rust-lib/rgb_node.h"
 %}
 
 %typemap(jstype) CResult "COpaqueStruct"
@@ -19,4 +19,4 @@
     }
 %}
 
-%include "../../rgb_node.h"
+%include "../../rust-lib/rgb_node.h"

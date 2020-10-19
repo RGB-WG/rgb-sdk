@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    ndkVersion "20.1.5948944"
 
     defaultConfig {
         minSdkVersion 21
@@ -24,11 +25,7 @@ task buildRust(type: Exec) {
     commandLine './build_rust.sh'
 }
 
-afterEvaluate {
-  android.libraryVariants.all { variant ->
-    variant.javaCompileProvider.get().dependsOn(buildRust)
-  }
-}
+preBuild.dependsOn buildRust
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

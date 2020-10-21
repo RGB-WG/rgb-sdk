@@ -13,8 +13,6 @@ struct TransferArgs: Arguments {
     let allocate: [CoinAllocation]
     let invoice: String
     let prototype_psbt: String
-    let fee: UInt
-    let change: String
     let consignment_file: String
     let transaction_file: String
 }

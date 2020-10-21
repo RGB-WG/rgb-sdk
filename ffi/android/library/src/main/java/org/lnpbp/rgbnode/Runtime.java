@@ -38,8 +38,8 @@ public class Runtime {
         }
     }
 
-    public void transfer(List<String> inputs, List<IssueArgs.CoinAllocation> allocate, String invoice, String prototype_psbt, Integer fee, String change, String consignment_file, String transaction_file) throws RuntimeException {
-        final TransferArgs args = new TransferArgs(inputs, allocate, invoice, prototype_psbt, fee, change, consignment_file, transaction_file);
+    public void transfer(List<String> inputs, List<IssueArgs.CoinAllocation> allocate, String invoice, String prototype_psbt, String consignment_file, String transaction_file) throws RuntimeException {
+        final TransferArgs args = new TransferArgs(inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file);
         try {
             final String jsonArgs = mapper.writeValueAsString(args);
             rgb_node.transfer(this.runtime, jsonArgs);

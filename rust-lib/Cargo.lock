@@ -2375,18 +2375,3 @@ dependencies = [
  "metadeps",
  "zeromq-src",
 ]
-
-[[patch.unused]]
-name = "bitcoin"
-version = "0.25.0"
-source = "git+https://github.com/LNP-BP/rust-bitcoin?tag=lnpbp-v0.1.0-rc1#dc06d451c01ef7b22509f0eb4db1f817e4e83daa"
-
-[[patch.unused]]
-name = "bitcoin_hashes"
-version = "0.9.0"
-source = "git+https://github.com/LNP-BP/bitcoin_hashes?tag=lnpbp-v0.1.0-rc1#7269ef478004a6059377bbd0e8b3ffd1839de55c"
-
-[[patch.unused]]
-name = "miniscript"
-version = "2.0.0"
-source = "git+https://github.com/LNP-BP/rust-miniscript?tag=lnpbp-v0.1.0-rc1#ba436de1b8a5953d5050dbc31fa4642e740e4438"

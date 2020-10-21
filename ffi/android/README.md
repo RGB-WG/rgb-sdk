@@ -17,24 +17,6 @@ Both instructions will generate the artifacts (`library-debug.aar` and
 ```
 rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-androideabi i686-linux-android
 ```
-* Update your `~/.cargo/config.toml` file to set the correct linker and ar command for each target (expand `<NDK_HOME>` manually):
-```
-[target.aarch64-linux-android]
-ar = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"
-linker = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"
-
-[target.x86_64-linux-android]
-ar = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android-ar"
-linker = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"
-
-[target.armv7-linux-androideabi]
-ar = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-ar"
-linker = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"
-
-[target.i686-linux-android]
-ar = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android-ar"
-linker = "<NDK_HOME>/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android26-clang"
-```
 * Go to `ffi/android` and then:
     * Update the `PATH` in `build_rust.sh` script if you're not building from x86_64
     * Run `./gradlew build` (if something fails, manually run the `build_rust.sh` script for a better error report)

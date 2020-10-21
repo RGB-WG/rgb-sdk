@@ -33,19 +33,6 @@ RUN yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
         "ndk;$NDK_VERSION" \
         "cmake;3.10.2.4988404"
 
-RUN echo '[target.aarch64-linux-android]\n\
-ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"\n\
-linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"\n\n\
-[target.x86_64-linux-android]\n\
-ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android-ar"\n\
-linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"\n\n\
-[target.armv7-linux-androideabi]\n\
-ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-ar"\n\
-linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"\n\n\
-[target.i686-linux-android]\n\
-ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android-ar"\n\
-linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android26-clang"' > $CARGO_HOME/config.toml
-
 RUN rustup target add \
         aarch64-linux-android \
         x86_64-linux-android \

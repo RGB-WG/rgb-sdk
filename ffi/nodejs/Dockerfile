@@ -1,4 +1,4 @@
-FROM rustlang/rust:nightly-slim as builder
+FROM rust:1.47.0-slim-buster as builder
 
 COPY ffi/nodejs /rgb-sdk/ffi/nodejs
 COPY rust-lib /rgb-sdk/rust-lib

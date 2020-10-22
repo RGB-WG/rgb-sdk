@@ -16,7 +16,7 @@ openssl = { version = "^0.10", features = ["vendored"] }
 
 [dependencies]
 log = "0.4"
-rgb_node = { git = "https://github.com/LNP-BP/rgb-node", branch = "master" }
+rgb_node = "~0.1.0"
 serde = { version = "~1.0.111", features = ["derive"] }
 serde_with = "~1.5.0"
 serde_json = "~1.0.55"

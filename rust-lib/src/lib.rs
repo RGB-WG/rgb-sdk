@@ -221,7 +221,6 @@ struct TransferArgs {
     #[serde(with = "serde_with::rust::display_fromstr")]
     invoice: Invoice,
     prototype_psbt: String,
-    fee: u64,
     consignment_file: String,
     transaction_file: String,
 }
@@ -238,7 +237,6 @@ fn _transfer(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
             data.allocate,
             data.invoice,
             data.prototype_psbt,
-            data.fee,
             data.consignment_file,
             data.transaction_file,
         )

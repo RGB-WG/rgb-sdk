@@ -5,6 +5,8 @@ use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
 use std::os::raw::{c_char, c_void};
+use std::path;
+use std::str::FromStr;
 
 use log::{info, LevelFilter};
 
@@ -120,35 +122,41 @@ where
     }
 }
 
-#[derive(Debug, Deserialize)]
-struct StartRgbArgs {
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    network: bp::Chain,
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    stash_endpoint: SocketLocator,
-    contract_endpoints: HashMap<ContractName, String>,
+fn _start_rgb(
+    network: *mut c_char,
+    stash_endpoint: *mut c_char,
+    contract_endpoints: *mut c_char,
     threaded: bool,
-    datadir: String,
-}
+    datadir: *mut c_char,
+) -> Result<Runtime, String> {
+    let c_network = unsafe { CStr::from_ptr(network) };
+    let network = bp::Chain::from_str(c_network.to_str().unwrap()).unwrap();
 
-fn _start_rgb(json: *mut c_char) -> Result<Runtime, String> {
-    let config: StartRgbArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
-    info!("Config: {:?}", config);
+    let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
+    let stash_endpoint = SocketLocator::Posix(path::PathBuf::from(
+        c_stash_endpoint.to_str().unwrap().to_string(),
+    ));
+
+    let contract_endpoints: HashMap<ContractName, String> =
+        serde_json::from_str(ptr_to_string(contract_endpoints)?.as_str())
+            .map_err(|e| format!("{:?}", e))?;
+
+    let c_datadir = unsafe { CStr::from_ptr(datadir) };
+    let datadir = c_datadir.to_str().unwrap().to_string();
 
     let config = Config {
-        network: config.network,
-        stash_endpoint: config.stash_endpoint,
-        threaded: config.threaded,
-        data_dir: config.datadir,
-        contract_endpoints: config
-            .contract_endpoints
+        network: network,
+        stash_endpoint: stash_endpoint,
+        contract_endpoints: contract_endpoints
             .into_iter()
             .map(|(k, v)| -> Result<_, UrlError> { Ok((k, v.parse()?)) })
             .collect::<Result<_, _>>()
             .map_err(|e| format!("{:?}", e))?,
+        threaded: threaded,
+        data_dir: datadir,
     };
 
+    info!("{:?}", config);
     Runtime::init(config).map_err(|e| format!("{:?}", e))
 }
 
@@ -165,12 +173,25 @@ fn start_logger() {
 }
 
 #[no_mangle]
-pub extern "C" fn start_rgb(json: *mut c_char) -> CResult {
+pub extern "C" fn start_rgb(
+    network: *mut c_char,
+    stash_endpoint: *mut c_char,
+    contract_endpoints: *mut c_char,
+    threaded: bool,
+    datadir: *mut c_char,
+) -> CResult {
     start_logger();
 
     info!("Starting RGB...");
 
-    _start_rgb(json).into()
+    _start_rgb(
+        network,
+        stash_endpoint,
+        contract_endpoints,
+        threaded,
+        datadir,
+    )
+    .into()
 }
 
 #[derive(Debug, Deserialize)]
@@ -214,31 +235,49 @@ pub extern "C" fn issue(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
     _issue(runtime, json).into()
 }
 
-#[derive(Debug, Deserialize)]
-struct TransferArgs {
-    inputs: Vec<OutPoint>,
-    allocate: Vec<Outcoins>,
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    invoice: Invoice,
-    prototype_psbt: String,
-    consignment_file: String,
-    transaction_file: String,
-}
-
-fn _transfer(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
+fn _transfer(
+    runtime: &COpaqueStruct,
+    inputs: *mut c_char,
+    allocate: *mut c_char,
+    invoice: *mut c_char,
+    prototype_psbt: *mut c_char,
+    consignment_file: *mut c_char,
+    transaction_file: *mut c_char,
+) -> Result<(), String> {
     let runtime = Runtime::from_opaque(runtime)?;
-    let data: TransferArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
-    info!("{:?}", data);
+
+    let inputs: Vec<OutPoint> =
+        serde_json::from_str(ptr_to_string(inputs)?.as_str()).map_err(|e| format!("{:?}", e))?;
+
+    let allocate: Vec<Outcoins> =
+        serde_json::from_str(ptr_to_string(allocate)?.as_str()).map_err(|e| format!("{:?}", e))?;
+
+    let c_invoice = unsafe { CStr::from_ptr(invoice) };
+    let invoice = Invoice::from_str(c_invoice.to_str().unwrap()).unwrap();
+
+    let c_prototype_psbt = unsafe { CStr::from_ptr(prototype_psbt) };
+    let prototype_psbt = c_prototype_psbt.to_str().unwrap().to_string();
+
+    let c_consignment_file = unsafe { CStr::from_ptr(consignment_file) };
+    let consignment_file = c_consignment_file.to_str().unwrap().to_string();
+
+    let c_transaction_file = unsafe { CStr::from_ptr(transaction_file) };
+    let transaction_file = c_transaction_file.to_str().unwrap().to_string();
+
+    info!(
+        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {:?}, prototype_psbt: {:?}, \
+        consignment_file: {:?}, transaction_file: {:?} }}",
+        inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file
+    );
 
     runtime
         .transfer(
-            data.inputs,
-            data.allocate,
-            data.invoice,
-            data.prototype_psbt,
-            data.consignment_file,
-            data.transaction_file,
+            inputs,
+            allocate,
+            invoice,
+            prototype_psbt,
+            consignment_file,
+            transaction_file,
         )
         .map_err(|e| format!("{:?}", e))
         .map(|_| ())
@@ -246,6 +285,23 @@ fn _transfer(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
 }
 
 #[no_mangle]
-pub extern "C" fn transfer(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
-    _transfer(runtime, json).into()
+pub extern "C" fn transfer(
+    runtime: &COpaqueStruct,
+    inputs: *mut c_char,
+    allocate: *mut c_char,
+    invoice: *mut c_char,
+    prototype_psbt: *mut c_char,
+    consignment_file: *mut c_char,
+    transaction_file: *mut c_char,
+) -> CResult {
+    _transfer(
+        runtime,
+        inputs,
+        allocate,
+        invoice,
+        prototype_psbt,
+        consignment_file,
+        transaction_file,
+    )
+    .into()
 }

@@ -21,8 +21,8 @@ public class Runtime {
 
         final StartRgbArgs args = new StartRgbArgs(network, stashEndpoint, contractEndpoints, threaded, datadir);
         try {
-            final String jsonArgs = mapper.writeValueAsString(args);
-            this.runtime = rgb_node.start_rgb(jsonArgs);
+            final String contractEndpointsStr = mapper.writeValueAsString(contractEndpoints);
+            this.runtime = rgb_node.start_rgb(network, stashEndpoint, contractEndpointsStr, threaded, datadir);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -41,8 +41,9 @@ public class Runtime {
     public void transfer(List<String> inputs, List<IssueArgs.CoinAllocation> allocate, String invoice, String prototype_psbt, String consignment_file, String transaction_file) throws RuntimeException {
         final TransferArgs args = new TransferArgs(inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file);
         try {
-            final String jsonArgs = mapper.writeValueAsString(args);
-            rgb_node.transfer(this.runtime, jsonArgs);
+            final String inputsStr = mapper.writeValueAsString(inputs);
+            final String allocateStr = mapper.writeValueAsString(allocate);
+            rgb_node.transfer(this.runtime, inputsStr, allocateStr, invoice, prototype_psbt, consignment_file, transaction_file);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

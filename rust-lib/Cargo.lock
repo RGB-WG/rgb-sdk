@@ -1518,6 +1518,7 @@ dependencies = [
 name = "rgb"
 version = "0.1.0-rc.1"
 dependencies = [
+ "amplify_derive",
  "android_logger",
  "cbindgen",
  "env_logger",
@@ -1533,9 +1534,9 @@ dependencies = [
 
 [[package]]
 name = "rgb_node"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4785fc4d0353f6108d4feb0d341b95140ba68d0e16bf8af7f8865fd212e102a7"
+checksum = "3b0bd790a4fa374df1adce53a014df1db0a047dbddb209e6509825f462ec8229"
 dependencies = [
  "amplify",
  "amplify_derive",

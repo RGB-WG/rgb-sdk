@@ -5,6 +5,8 @@ use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
 use std::os::raw::{c_char, c_void};
+use std::path;
+use std::str::FromStr;
 
 use log::{info, LevelFilter};
 
@@ -20,14 +22,19 @@ use rgb::i9n::*;
 use rgb::rgbd::ContractName;
 use rgb::util::SealSpec;
 
+#[macro_use]
+extern crate amplify_derive;
+
 trait CReturnType: Sized + 'static {
-    fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, String> {
+    fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, RequestError> {
         let mut hasher = DefaultHasher::new();
         TypeId::of::<Self>().hash(&mut hasher);
         let ty = hasher.finish();
 
         if other.ty != ty {
-            return Err(String::from("Type mismatch"));
+            return Err(RequestError::Runtime(
+                rgb::error::BootstrapError::ArgParseError("Type mismatch".to_string()),
+            ));
         }
 
         let boxed = unsafe { Box::from_raw(other.ptr.clone() as *mut Self) };
@@ -81,13 +88,8 @@ fn string_to_ptr(other: String) -> *const c_char {
     cstr.into_raw()
 }
 
-fn ptr_to_string(ptr: *mut c_char) -> Result<String, String> {
-    unsafe {
-        CStr::from_ptr(ptr)
-            .to_str()
-            .map(|s| s.into())
-            .map_err(|e| format!("{:?}", e))
-    }
+fn ptr_to_string(ptr: *mut c_char) -> Result<String, RequestError> {
+    unsafe { Ok(CStr::from_ptr(ptr).to_string_lossy().into_owned()) }
 }
 
 #[repr(C)]
@@ -120,36 +122,75 @@ where
     }
 }
 
-#[derive(Debug, Deserialize)]
-struct StartRgbArgs {
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    network: bp::Chain,
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    stash_endpoint: SocketLocator,
-    contract_endpoints: HashMap<ContractName, String>,
-    threaded: bool,
-    datadir: String,
+#[derive(Debug, Display, From, Error)]
+#[display(doc_comments)]
+#[non_exhaustive]
+enum RequestError {
+    /// Input value is not a JSON object or JSON parse error: {_0}
+    #[from]
+    Json(serde_json::Error),
+
+    /// Invoice error: {_0}
+    #[from]
+    Invoice(rgb::fungible::InvoiceError),
+
+    /// Input value is not a UTF8 string: {_0}
+    #[from]
+    Utf8(std::str::Utf8Error),
+
+    /// Invalid network/chain identifier: {_0}
+    #[from]
+    ChainParse(rgb::lnpbp::bp::chain::ParseError),
+
+    /// Bootstrap error: {_0}
+    #[from]
+    Runtime(rgb::error::BootstrapError),
+
+    /// Url error: {_0}
+    #[from]
+    Url(UrlError),
+
+    /// Integration error: {_0}
+    #[from]
+    Integration(rgb::i9n::Error),
 }
 
-fn _start_rgb(json: *mut c_char) -> Result<Runtime, String> {
-    let config: StartRgbArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
-    info!("Config: {:?}", config);
+fn _start_rgb(
+    network: *mut c_char,
+    stash_endpoint: *mut c_char,
+    contract_endpoints: *mut c_char,
+    threaded: bool,
+    datadir: *mut c_char,
+) -> Result<Runtime, RequestError> {
+    let c_network = unsafe { CStr::from_ptr(network) };
+    let network = bp::Chain::from_str(c_network.to_str()?)?;
+
+    let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
+    let stash_endpoint =
+        SocketLocator::Posix(path::PathBuf::from(c_stash_endpoint.to_str()?.to_string()));
+
+    let contract_endpoints: HashMap<ContractName, String> =
+        serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
+
+    let c_datadir = unsafe { CStr::from_ptr(datadir) };
+    let datadir = c_datadir.to_str()?.to_string();
 
     let config = Config {
-        network: config.network,
-        stash_endpoint: config.stash_endpoint,
-        threaded: config.threaded,
-        data_dir: config.datadir,
-        contract_endpoints: config
-            .contract_endpoints
+        network: network,
+        stash_endpoint: stash_endpoint,
+        contract_endpoints: contract_endpoints
             .into_iter()
             .map(|(k, v)| -> Result<_, UrlError> { Ok((k, v.parse()?)) })
-            .collect::<Result<_, _>>()
-            .map_err(|e| format!("{:?}", e))?,
+            .collect::<Result<_, _>>()?,
+        threaded: threaded,
+        data_dir: datadir,
     };
 
-    Runtime::init(config).map_err(|e| format!("{:?}", e))
+    info!("{:?}", config);
+
+    let runtime = Runtime::init(config)?;
+
+    Ok(runtime)
 }
 
 #[cfg(target_os = "android")]
@@ -165,12 +206,25 @@ fn start_logger() {
 }
 
 #[no_mangle]
-pub extern "C" fn start_rgb(json: *mut c_char) -> CResult {
+pub extern "C" fn start_rgb(
+    network: *mut c_char,
+    stash_endpoint: *mut c_char,
+    contract_endpoints: *mut c_char,
+    threaded: bool,
+    datadir: *mut c_char,
+) -> CResult {
     start_logger();
 
     info!("Starting RGB...");
 
-    _start_rgb(json).into()
+    _start_rgb(
+        network,
+        stash_endpoint,
+        contract_endpoints,
+        threaded,
+        datadir,
+    )
+    .into()
 }
 
 #[derive(Debug, Deserialize)]
@@ -189,24 +243,23 @@ struct IssueArgs {
     prune_seals: Vec<SealSpec>,
 }
 
-fn _issue(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
+fn _issue(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
-    let data: IssueArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
+    let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
     info!("{:?}", data);
 
-    runtime
-        .issue(
-            data.network,
-            data.ticker,
-            data.name,
-            data.description,
-            data.issue_structure,
-            data.allocations,
-            data.precision,
-            data.prune_seals,
-        )
-        .map_err(|e| format!("{:?}", e))
+    runtime.issue(
+        data.network,
+        data.ticker,
+        data.name,
+        data.description,
+        data.issue_structure,
+        data.allocations,
+        data.precision,
+        data.prune_seals,
+    )?;
+
+    Ok(())
 }
 
 #[no_mangle]
@@ -214,38 +267,69 @@ pub extern "C" fn issue(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
     _issue(runtime, json).into()
 }
 
-#[derive(Debug, Deserialize)]
-struct TransferArgs {
-    inputs: Vec<OutPoint>,
-    allocate: Vec<Outcoins>,
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    invoice: Invoice,
-    prototype_psbt: String,
-    consignment_file: String,
-    transaction_file: String,
-}
-
-fn _transfer(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
+fn _transfer(
+    runtime: &COpaqueStruct,
+    inputs: *mut c_char,
+    allocate: *mut c_char,
+    invoice: *mut c_char,
+    prototype_psbt: *mut c_char,
+    consignment_file: *mut c_char,
+    transaction_file: *mut c_char,
+) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
-    let data: TransferArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
-    info!("{:?}", data);
 
-    runtime
-        .transfer(
-            data.inputs,
-            data.allocate,
-            data.invoice,
-            data.prototype_psbt,
-            data.consignment_file,
-            data.transaction_file,
-        )
-        .map_err(|e| format!("{:?}", e))
-        .map(|_| ())
-    //.and_then(|r| serde_json::to_string(&r).map_err(|e| format!("{:?}", e)))
+    let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
+
+    let allocate: Vec<Outcoins> = serde_json::from_str(&ptr_to_string(allocate)?)?;
+
+    let c_invoice = unsafe { CStr::from_ptr(invoice) };
+    let invoice = Invoice::from_str(c_invoice.to_str()?)?;
+
+    let c_prototype_psbt = unsafe { CStr::from_ptr(prototype_psbt) };
+    let prototype_psbt = c_prototype_psbt.to_str()?.to_string();
+
+    let c_consignment_file = unsafe { CStr::from_ptr(consignment_file) };
+    let consignment_file = c_consignment_file.to_str()?.to_string();
+
+    let c_transaction_file = unsafe { CStr::from_ptr(transaction_file) };
+    let transaction_file = c_transaction_file.to_str()?.to_string();
+
+    info!(
+        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {:?}, prototype_psbt: {:?}, \
+        consignment_file: {:?}, transaction_file: {:?} }}",
+        inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file
+    );
+
+    runtime.transfer(
+        inputs,
+        allocate,
+        invoice,
+        prototype_psbt,
+        consignment_file,
+        transaction_file,
+    )?;
+
+    Ok(())
 }
 
 #[no_mangle]
-pub extern "C" fn transfer(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
-    _transfer(runtime, json).into()
+pub extern "C" fn transfer(
+    runtime: &COpaqueStruct,
+    inputs: *mut c_char,
+    allocate: *mut c_char,
+    invoice: *mut c_char,
+    prototype_psbt: *mut c_char,
+    consignment_file: *mut c_char,
+    transaction_file: *mut c_char,
+) -> CResult {
+    _transfer(
+        runtime,
+        inputs,
+        allocate,
+        invoice,
+        prototype_psbt,
+        consignment_file,
+        transaction_file,
+    )
+    .into()
 }

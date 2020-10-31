@@ -1,0 +1,102 @@
+name: Bindings
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+      - 'demo/**'
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  android:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        toolchain: [ 1.47.0 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
+          wget https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
+          tar xf swig-4.0.1.tar.gz
+          cd swig-4.0.1 && ./configure && make -j4 && sudo make install
+      - name: Build bindings
+        env:
+          NDK_VERSION: 20.1.5948944
+        run: |
+          export ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
+          export NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
+          # this variable should be deprecated but gradlew fails to find the correct ndk without it
+          export ANDROID_NDK_HOME="$NDK_HOME"
+          wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+          unzip commandlinetools-linux-6609375_latest.zip
+          mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
+          yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+            "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
+          rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-androideabi i686-linux-android
+          cd $GITHUB_WORKSPACE/ffi/android
+          ./gradlew build
+  ios:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest ]
+        toolchain: [ 1.47.0 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Install macOS dependencies
+        run: |
+          brew install cmake openssl zmq
+          rustup target add aarch64-apple-ios x86_64-apple-ios
+          cargo install cargo-lipo
+      - name: Build bindings
+        uses: actions-rs/cargo@v1
+        with:
+          command: lipo
+          args: --manifest-path rust-lib/Cargo.toml --release
+  node:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+        toolchain: [ 1.47.0 ]
+        node-version: [ 10.x ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          override: true
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
+          wget https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
+          tar xf swig-4.0.1.tar.gz
+          cd swig-4.0.1 && ./configure && make -j4 && sudo make install
+      - name: Install Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build bindings
+        run: |
+          sudo apt-get install -y node-gyp
+          cd $GITHUB_WORKSPACE/ffi/nodejs
+          npm install

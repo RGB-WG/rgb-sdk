@@ -33,7 +33,9 @@ trait CReturnType: Sized + 'static {
 
         if other.ty != ty {
             return Err(RequestError::Runtime(
-                rgb::error::BootstrapError::ArgParseError("Type mismatch".to_string()),
+                rgb::error::BootstrapError::ArgParseError(
+                    "Type mismatch".to_string(),
+                ),
             ));
         }
 
@@ -166,8 +168,9 @@ fn _start_rgb(
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
     let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
-    let stash_endpoint =
-        SocketLocator::Posix(path::PathBuf::from(c_stash_endpoint.to_str()?.to_string()));
+    let stash_endpoint = SocketLocator::Posix(path::PathBuf::from(
+        c_stash_endpoint.to_str()?.to_string(),
+    ));
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
@@ -195,7 +198,9 @@ fn _start_rgb(
 
 #[cfg(target_os = "android")]
 fn start_logger() {
-    android_logger::init_once(android_logger::Config::default().with_min_level(log::Level::Debug));
+    android_logger::init_once(
+        android_logger::Config::default().with_min_level(log::Level::Debug),
+    );
 }
 
 #[cfg(not(target_os = "android"))]
@@ -243,7 +248,10 @@ struct IssueArgs {
     prune_seals: Vec<SealSpec>,
 }
 
-fn _issue(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), RequestError> {
+fn _issue(
+    runtime: &COpaqueStruct,
+    json: *mut c_char,
+) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
     let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
     info!("{:?}", data);
@@ -280,7 +288,8 @@ fn _transfer(
 
     let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
 
-    let allocate: Vec<Outcoins> = serde_json::from_str(&ptr_to_string(allocate)?)?;
+    let allocate: Vec<Outcoins> =
+        serde_json::from_str(&ptr_to_string(allocate)?)?;
 
     let c_invoice = unsafe { CStr::from_ptr(invoice) };
     let invoice = Invoice::from_str(c_invoice.to_str()?)?;

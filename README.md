@@ -1,5 +1,7 @@
 # RGB SDK
 
+![Lints](https://github.com/LNP-BP/rgb-sdk/workflows/Lints/badge.svg)
+
 This repository contains FFI bindings and SDK for wallet & server-side development,
 plus some sample applications
 

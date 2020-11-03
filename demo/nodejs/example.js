@@ -2,9 +2,9 @@ const ex = require('../../ffi/nodejs/build/Release/rgb_node')
 
 const config = {
     network: "testnet",
-    stash_endpoint: "ipc:/tmp/rgb-node/testnet/stashd.rpc",
+    stash_endpoint: "lnpz:/tmp/rgb-node/testnet/stashd.rpc",
     contract_endpoints: {
-        Fungible: "ipc:/tmp/rgb-node/testnet/fungibled.rpc"
+        Fungible: "lnpz:/tmp/rgb-node/testnet/fungibled.rpc"
     },
     threaded: false,
     datadir: "/tmp/rgb-node/"

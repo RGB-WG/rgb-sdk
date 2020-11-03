@@ -21,8 +21,8 @@ public class DemoApp extends Application {
         final String network = "testnet";
 
         final HashMap contractEndpoints = new HashMap();
-        contractEndpoints.put("Fungible", String.format("ipc:%s/%s/fungibled.rpc", datadir, network));
-        this.runtime = new Runtime(network, String.format("ipc:%s/%s/stashd.rpc", datadir, network), contractEndpoints, true, datadir);
+        contractEndpoints.put("Fungible", String.format("lnpz://%s/%s/fungibled.rpc", datadir, network));
+        this.runtime = new Runtime(network, String.format("lnpz://%s/%s/stashd.rpc", datadir, network), contractEndpoints, true, datadir);
    }
 
     public Runtime getRuntime() {

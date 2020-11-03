@@ -5,7 +5,6 @@ use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
 use std::os::raw::{c_char, c_void};
-use std::path;
 use std::str::FromStr;
 
 use log::{info, LevelFilter};
@@ -15,7 +14,7 @@ use serde::Deserialize;
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
-use rgb::lnpbp::lnp::transport::zmq::{SocketLocator, UrlError};
+use rgb::lnpbp::lnp::transport::ZmqSocketAddr;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
@@ -148,13 +147,17 @@ enum RequestError {
     #[from]
     Runtime(rgb::error::BootstrapError),
 
-    /// Url error: {_0}
+    /// Transport error: {_0}
     #[from]
-    Url(UrlError),
+    Transport(rgb::lnpbp::lnp::transport::Error),
 
     /// Integration error: {_0}
     #[from]
     Integration(rgb::i9n::Error),
+
+    /// Impossible error: {_0}
+    #[from]
+    Infallible(std::convert::Infallible),
 }
 
 fn _start_rgb(
@@ -168,9 +171,8 @@ fn _start_rgb(
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
     let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
-    let stash_endpoint = SocketLocator::Posix(path::PathBuf::from(
-        c_stash_endpoint.to_str()?.to_string(),
-    ));
+    let stash_endpoint =
+        ZmqSocketAddr::Ipc(c_stash_endpoint.to_str()?.to_string());
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
@@ -183,7 +185,9 @@ fn _start_rgb(
         stash_endpoint: stash_endpoint,
         contract_endpoints: contract_endpoints
             .into_iter()
-            .map(|(k, v)| -> Result<_, UrlError> { Ok((k, v.parse()?)) })
+            .map(|(k, v)| -> Result<_, RequestError> {
+                Ok((k, ZmqSocketAddr::Ipc(v.parse()?)))
+            })
             .collect::<Result<_, _>>()?,
         threaded: threaded,
         data_dir: datadir,

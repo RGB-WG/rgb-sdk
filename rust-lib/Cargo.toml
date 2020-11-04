@@ -2,7 +2,7 @@
 name = "rgb"
 version = "0.1.0-rc.1"
 authors = ["Dr Maxim Orlovsky <orlovsky@pandoracore.com>",
-           "Alekos Filini <alekos.filini@gmail.com>"]
+           "Zoe Faltibà <zoefaltiba@gmail.com>"]
 edition = "2018"
 build = "build.rs"
 

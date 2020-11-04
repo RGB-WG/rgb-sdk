@@ -1,4 +1,4 @@
-# RGB demo application
+# RGB React Native demo application
 
 This React Native project has the purpose to show the capabilities of
 the [RGB Node & SDK](https://github.com/LNP-BP/rgb-node) and to provide
@@ -35,12 +35,11 @@ $ npx react-native start --port 8081
 ### Build and run
 
 Build the rgb-node android bindings by following
-[this instructions](/ffi/android)
-and then copy the generated archive inside this project:
+[these instructions](/ffi/android) and then, from the project root, run:
 
 ```bash
-$ mkdir -p android/app/libs
-$ cp <path_to_rgb-node_project>/ffi/android/library/build/outputs/aar/library-debug.aar android/app/libs/library-debug.aar
+$ mkdir -p demo/react-native/android/app/libs
+$ cp ffi/android/library/build/outputs/aar/library-debug.aar demo/react-native/android/app/libs/library-debug.aar
 ```
 
 Open the android project from Android Studio

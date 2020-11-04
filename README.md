@@ -4,19 +4,14 @@
 ![Lints](https://github.com/LNP-BP/rgb-sdk/workflows/Lints/badge.svg)
 
 This repository contains FFI bindings and SDK for wallet & server-side development,
-plus some sample applications
+plus some sample applications.
 
 ## Building RGB SDK
 
-```shell script
-cd rust-lib
-cargo lipo
-cargo lipo --release
-```
+First, you'll need to [install Rust](https://www.rust-lang.org/tools/install),
+then follow the instructions specific to your language binding of choice.
 
-Then check гыу `rust-lib/target/universal/release/rgb.a` in any application integration.
-
-## Language bindings
+### Language bindings
 
 The following bindings are available:
 - [Android](/ffi/android)

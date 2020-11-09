@@ -14,11 +14,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var runtime: Runtime? = {
         let datadir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
         let network = "testnet"
-        let contractEndpoints = ["Fungible": "ipc:/\(datadir)/\(network)/fungibled.rpc"]
-                        
+        let contractEndpoints = ["Fungible": "lnpz://\(datadir)/\(network)/fungibled.rpc"]
+
         let args = StartRgbArgs(
             network: network,
-            stashEndpoint: "ipc:/\(datadir)/\(network)/stashd.rpc",
+            stashEndpoint: "lnpz://\(datadir)/\(network)/stashd.rpc",
             contractEndpoints: contractEndpoints,
             threaded: true,
             datadir: datadir

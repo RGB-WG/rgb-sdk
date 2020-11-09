@@ -15,14 +15,16 @@ cbindgen = "^0.14"
 openssl = { version = "^0.10", features = ["vendored"] }
 
 [dependencies]
-amplify_derive = "~2.0.6"
+amplify_derive = "~2.3.0"
 log = "0.4"
-rgb_node = "~0.1.1"
+rgb_node = { version = "~0.2.0-beta.2", features = [
+    "server", "client", "cli", "node" ] }
 serde = { version = "~1.0.111", features = ["derive"] }
 serde_with = "~1.5.0"
 serde_json = "~1.0.55"
 
 [patch.crates-io]
+lightning-invoice = { git = "https://github.com/LNP-BP/rust-lightning-invoice", tag = "lnpbp-v0.1.0-beta-4" }
 # Remove this once https://github.com/jean-airoldie/zeromq-src-rs/pull/15 got merged
 zeromq-src = { git = "https://github.com/LNP-BP/zeromq-src-rs", branch = "fix/cmake" }
 

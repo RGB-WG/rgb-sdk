@@ -4,7 +4,8 @@ use std::collections::HashMap;
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
-use std::os::raw::{c_char, c_void};
+use std::os::raw::{c_char, c_int, c_void};
+use std::slice;
 use std::str::FromStr;
 
 use log::LevelFilter;
@@ -12,12 +13,13 @@ use log::LevelFilter;
 use serde::Deserialize;
 
 use rgb::lnpbp::bitcoin::OutPoint;
-
 use rgb::lnpbp::bp;
 use rgb::lnpbp::rgb::{ContractId, FromBech32};
+use rgb::lnpbp::rgb::Consignment;
+use rgb::lnpbp::strict_encoding::strict_decode;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
-use rgb::i9n::*;
+use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::SealSpec;
 
@@ -194,6 +196,14 @@ enum RequestError {
     /// Outpoint parsing error: {_0}
     #[from]
     Outpoint(rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError),
+
+    /// I/O error: {_0}
+    #[from]
+    Io(std::io::Error),
+
+    /// Strict encoding error: {_0}
+    #[from]
+    StrictEncoding(rgb::lnpbp::strict_encoding::Error),
 }
 
 fn _start_rgb(
@@ -478,4 +488,79 @@ pub extern "C" fn outpoint_assets(
     outpoint: *const c_char,
 ) -> CResultString {
     _outpoint_assets(runtime, outpoint).into()
+}
+
+fn _accept(
+    runtime: &COpaqueStruct,
+    consignment_bytes: *const u8,
+    consignment_length: c_int,
+    reveal_outpoints: *mut c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let consignment_bytes = unsafe {
+        assert!(!consignment_bytes.is_null());
+        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
+    };
+    trace!("consignment: {:x?}", consignment_bytes);
+    let consignment: Consignment = strict_decode(&consignment_bytes)?;
+
+    let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
+        serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
+
+    trace!(
+        "AcceptArgs {{ consignment: {:?}, reveal_outpoints: {:?} }}",
+        consignment,
+        reveal_outpoints
+    );
+
+    runtime.accept(consignment, reveal_outpoints)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn accept(
+    runtime: &COpaqueStruct,
+    consignment_bytes: *const u8,
+    consignment_length: c_int,
+    reveal_outpoints: *mut c_char,
+) -> CResult {
+    _accept(
+        runtime,
+        consignment_bytes,
+        consignment_length,
+        reveal_outpoints,
+    )
+    .into()
+}
+
+fn _validate(
+    runtime: &COpaqueStruct,
+    consignment_bytes: *const u8,
+    consignment_length: c_int,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let consignment_bytes = unsafe {
+        assert!(!consignment_bytes.is_null());
+        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
+    };
+    trace!("consignment: {:x?}", consignment_bytes);
+    let consignment: Consignment = strict_decode(&consignment_bytes)?;
+
+    trace!("ValidateArgs {{ consignment: {:?} }}", consignment);
+
+    runtime.validate(consignment)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn validate(
+    runtime: &COpaqueStruct,
+    consignment_bytes: *const u8,
+    consignment_length: c_int,
+) -> CResult {
+    _validate(runtime, consignment_bytes, consignment_length).into()
 }

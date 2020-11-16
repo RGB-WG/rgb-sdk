@@ -14,6 +14,7 @@ use serde::Deserialize;
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
+use rgb::lnpbp::rgb::ContractId;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
@@ -130,6 +131,10 @@ where
 #[display(doc_comments)]
 #[non_exhaustive]
 enum RequestError {
+    /// Hex error: {_0}
+    #[from]
+    Hex(rgb::lnpbp::hex::Error),
+
     /// Input value is not a JSON object or JSON parse error: {_0}
     #[from]
     Json(serde_json::Error),
@@ -161,6 +166,10 @@ enum RequestError {
     /// Impossible error: {_0}
     #[from]
     Infallible(std::convert::Infallible),
+
+    /// Outpoint parsing error: {_0}
+    #[from]
+    Outpoint(rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError),
 }
 
 fn _start_rgb(
@@ -397,4 +406,52 @@ pub extern "C" fn transfer(
         transaction_file,
     )
     .into()
+}
+
+fn _asset_allocations(
+    runtime: &COpaqueStruct,
+    contract_id: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
+    let contract_id = ContractId::from_str(c_contract_id.to_str()?)?;
+
+    debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
+
+    runtime.asset_allocations(contract_id)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn asset_allocations(
+    runtime: &COpaqueStruct,
+    contract_id: *const c_char,
+) -> CResult {
+    _asset_allocations(runtime, contract_id).into()
+}
+
+fn _outpoint_assets(
+    runtime: &COpaqueStruct,
+    outpoint: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
+    let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
+
+    debug!("OutpointAssets {{ outpoint: {:?} }}", outpoint);
+
+    runtime.outpoint_assets(outpoint)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn outpoint_assets(
+    runtime: &COpaqueStruct,
+    outpoint: *const c_char,
+) -> CResult {
+    _outpoint_assets(runtime, outpoint).into()
 }

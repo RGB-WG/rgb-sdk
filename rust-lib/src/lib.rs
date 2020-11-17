@@ -14,7 +14,7 @@ use serde::Deserialize;
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
-use rgb::lnpbp::rgb::ContractId;
+use rgb::lnpbp::rgb::{ContractId, FromBech32};
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
@@ -131,9 +131,9 @@ where
 #[display(doc_comments)]
 #[non_exhaustive]
 enum RequestError {
-    /// Hex error: {_0}
+    /// Bech32 error: {_0}
     #[from]
-    Hex(rgb::lnpbp::hex::Error),
+    Bech32(rgb::lnpbp::rgb::bech32::Error),
 
     /// Input value is not a JSON object or JSON parse error: {_0}
     #[from]
@@ -415,7 +415,7 @@ fn _asset_allocations(
     let runtime = Runtime::from_opaque(runtime)?;
 
     let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
-    let contract_id = ContractId::from_str(c_contract_id.to_str()?)?;
+    let contract_id = ContractId::from_bech32_str(c_contract_id.to_str()?)?;
 
     debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
 

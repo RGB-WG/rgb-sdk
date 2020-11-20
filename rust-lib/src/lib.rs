@@ -201,9 +201,30 @@ enum RequestError {
     #[from]
     Io(std::io::Error),
 
+    /// Input error: {_0}
+    #[from]
+    Input(String),
+
     /// Strict encoding error: {_0}
     #[from]
     StrictEncoding(rgb::lnpbp::strict_encoding::Error),
+}
+
+fn _get_consignment(
+    consignment_bytes: *const u8,
+    consignment_length: c_int,
+) -> Result<Consignment, RequestError> {
+    if consignment_bytes.is_null() {
+        return Err(RequestError::Input(s!(
+            "consignment bytes cannot be null"
+        )));
+    };
+    let consignment_bytes = unsafe {
+        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
+    };
+    trace!("consignment bytes: {:x?}", consignment_bytes);
+    let consignment: Consignment = strict_decode(&consignment_bytes)?;
+    Ok(consignment)
 }
 
 fn _start_rgb(
@@ -501,12 +522,7 @@ fn _accept(
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let consignment_bytes = unsafe {
-        assert!(!consignment_bytes.is_null());
-        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
-    };
-    trace!("consignment: {:x?}", consignment_bytes);
-    let consignment: Consignment = strict_decode(&consignment_bytes)?;
+    let consignment = _get_consignment(consignment_bytes, consignment_length)?;
 
     let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
         serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
@@ -545,12 +561,7 @@ fn _validate(
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let consignment_bytes = unsafe {
-        assert!(!consignment_bytes.is_null());
-        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
-    };
-    trace!("consignment: {:x?}", consignment_bytes);
-    let consignment: Consignment = strict_decode(&consignment_bytes)?;
+    let consignment = _get_consignment(consignment_bytes, consignment_length)?;
 
     trace!("ValidateArgs {{ consignment: {:?} }}", consignment);
 

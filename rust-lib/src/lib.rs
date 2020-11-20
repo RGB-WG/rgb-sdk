@@ -14,7 +14,6 @@ use serde::Deserialize;
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
-use rgb::lnpbp::lnp::transport::ZmqSocketAddr;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
@@ -162,7 +161,7 @@ enum RequestError {
 
 fn _start_rgb(
     network: *mut c_char,
-    stash_endpoint: *mut c_char,
+    stash_rpc_endpoint: *const c_char,
     contract_endpoints: *mut c_char,
     threaded: bool,
     datadir: *mut c_char,
@@ -170,9 +169,8 @@ fn _start_rgb(
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
-    let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
-    let stash_endpoint =
-        ZmqSocketAddr::Ipc(c_stash_endpoint.to_str()?.to_string());
+    let c_stash_rpc_endpoint = unsafe { CStr::from_ptr(stash_rpc_endpoint) };
+    let stash_rpc_endpoint = c_stash_rpc_endpoint.to_str()?.to_string();
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
@@ -182,15 +180,14 @@ fn _start_rgb(
 
     let config = Config {
         network: network,
-        stash_endpoint: stash_endpoint,
+        stash_rpc_endpoint: stash_rpc_endpoint,
         contract_endpoints: contract_endpoints
             .into_iter()
-            .map(|(k, v)| -> Result<_, RequestError> {
-                Ok((k, ZmqSocketAddr::Ipc(v.parse()?)))
-            })
+            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v)) })
             .collect::<Result<_, _>>()?,
         threaded: threaded,
         data_dir: datadir,
+        ..Config::default()
     };
 
     info!("{:?}", config);
@@ -217,7 +214,7 @@ fn start_logger() {
 #[no_mangle]
 pub extern "C" fn start_rgb(
     network: *mut c_char,
-    stash_endpoint: *mut c_char,
+    stash_rpc_endpoint: *const c_char,
     contract_endpoints: *mut c_char,
     threaded: bool,
     datadir: *mut c_char,
@@ -228,7 +225,7 @@ pub extern "C" fn start_rgb(
 
     _start_rgb(
         network,
-        stash_endpoint,
+        stash_rpc_endpoint,
         contract_endpoints,
         threaded,
         datadir,

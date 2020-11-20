@@ -1797,6 +1797,7 @@ dependencies = [
 name = "rgb"
 version = "0.1.0-rc.1"
 dependencies = [
+ "amplify",
  "amplify_derive",
  "android_logger",
  "cbindgen",

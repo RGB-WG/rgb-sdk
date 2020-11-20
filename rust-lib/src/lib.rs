@@ -21,6 +21,9 @@ use rgb::rgbd::ContractName;
 use rgb::util::SealSpec;
 
 #[macro_use]
+extern crate amplify;
+
+#[macro_use]
 extern crate amplify_derive;
 
 trait CReturnType: Sized + 'static {
@@ -32,7 +35,7 @@ trait CReturnType: Sized + 'static {
         if other.ty != ty {
             return Err(RequestError::Runtime(
                 rgb::error::BootstrapError::ArgParseError(
-                    "Type mismatch".to_string(),
+                    s!("Type mismatch"),
                 ),
             ));
         }

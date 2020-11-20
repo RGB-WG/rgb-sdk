@@ -95,7 +95,7 @@ fn string_to_ptr(other: String) -> *const c_char {
     cstr.into_raw()
 }
 
-fn ptr_to_string(ptr: *mut c_char) -> Result<String, RequestError> {
+fn ptr_to_string(ptr: *const c_char) -> Result<String, RequestError> {
     unsafe { Ok(CStr::from_ptr(ptr).to_string_lossy().into_owned()) }
 }
 
@@ -207,11 +207,11 @@ enum RequestError {
 }
 
 fn _start_rgb(
-    network: *mut c_char,
+    network: *const c_char,
     stash_rpc_endpoint: *const c_char,
-    contract_endpoints: *mut c_char,
+    contract_endpoints: *const c_char,
     threaded: bool,
-    datadir: *mut c_char,
+    datadir: *const c_char,
 ) -> Result<Runtime, RequestError> {
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
@@ -299,11 +299,11 @@ fn _start_logger() {
 
 #[no_mangle]
 pub extern "C" fn start_rgb(
-    network: *mut c_char,
+    network: *const c_char,
     stash_rpc_endpoint: *const c_char,
-    contract_endpoints: *mut c_char,
+    contract_endpoints: *const c_char,
     threaded: bool,
-    datadir: *mut c_char,
+    datadir: *const c_char,
 ) -> CResult {
     _start_logger();
 
@@ -349,7 +349,7 @@ struct IssueArgs {
 
 fn _issue(
     runtime: &COpaqueStruct,
-    json: *mut c_char,
+    json: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
     let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
@@ -370,18 +370,21 @@ fn _issue(
 }
 
 #[no_mangle]
-pub extern "C" fn issue(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
+pub extern "C" fn issue(
+    runtime: &COpaqueStruct,
+    json: *const c_char,
+) -> CResult {
     _issue(runtime, json).into()
 }
 
 fn _transfer(
     runtime: &COpaqueStruct,
-    inputs: *mut c_char,
-    allocate: *mut c_char,
-    invoice: *mut c_char,
-    prototype_psbt: *mut c_char,
-    consignment_file: *mut c_char,
-    transaction_file: *mut c_char,
+    inputs: *const c_char,
+    allocate: *const c_char,
+    invoice: *const c_char,
+    prototype_psbt: *const c_char,
+    consignment_file: *const c_char,
+    transaction_file: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
@@ -423,12 +426,12 @@ fn _transfer(
 #[no_mangle]
 pub extern "C" fn transfer(
     runtime: &COpaqueStruct,
-    inputs: *mut c_char,
-    allocate: *mut c_char,
-    invoice: *mut c_char,
-    prototype_psbt: *mut c_char,
-    consignment_file: *mut c_char,
-    transaction_file: *mut c_char,
+    inputs: *const c_char,
+    allocate: *const c_char,
+    invoice: *const c_char,
+    prototype_psbt: *const c_char,
+    consignment_file: *const c_char,
+    transaction_file: *const c_char,
 ) -> CResult {
     _transfer(
         runtime,
@@ -494,7 +497,7 @@ fn _accept(
     runtime: &COpaqueStruct,
     consignment_bytes: *const u8,
     consignment_length: c_int,
-    reveal_outpoints: *mut c_char,
+    reveal_outpoints: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
@@ -524,7 +527,7 @@ pub extern "C" fn accept(
     runtime: &COpaqueStruct,
     consignment_bytes: *const u8,
     consignment_length: c_int,
-    reveal_outpoints: *mut c_char,
+    reveal_outpoints: *const c_char,
 ) -> CResult {
     _accept(
         runtime,

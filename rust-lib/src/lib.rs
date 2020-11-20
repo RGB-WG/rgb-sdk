@@ -7,7 +7,7 @@ use std::hash::{Hash, Hasher};
 use std::os::raw::{c_char, c_void};
 use std::str::FromStr;
 
-use log::{info, LevelFilter};
+use log::LevelFilter;
 
 use serde::Deserialize;
 
@@ -25,6 +25,9 @@ extern crate amplify;
 
 #[macro_use]
 extern crate amplify_derive;
+
+#[macro_use]
+extern crate log;
 
 trait CReturnType: Sized + 'static {
     fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, RequestError> {

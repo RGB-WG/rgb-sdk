@@ -200,15 +200,54 @@ fn _start_rgb(
     Ok(runtime)
 }
 
+fn _run_rgb_embedded(
+    network: *const c_char,
+    datadir: *const c_char,
+) -> Result<Runtime, RequestError> {
+    let c_network = unsafe { CStr::from_ptr(network) };
+    let network = bp::Chain::from_str(c_network.to_str()?)?;
+
+    let c_datadir = unsafe { CStr::from_ptr(datadir) };
+    let datadir = c_datadir.to_str()?.to_string();
+
+    let contract_endpoints: HashMap<ContractName, String> =
+        [(ContractName::Fungible, s!("inproc://fungible-rpc"))]
+            .iter()
+            .cloned()
+            .collect();
+    let stash_rpc_endpoint = s!("inproc://stash-rpc");
+    let stash_pub_endpoint = s!("inproc://stash-pub");
+    let fungible_pub_endpoint = s!("inproc://fungible-pub");
+
+    let config = Config {
+        network: network,
+        stash_rpc_endpoint: stash_rpc_endpoint,
+        stash_pub_endpoint: stash_pub_endpoint,
+        fungible_pub_endpoint: fungible_pub_endpoint,
+        contract_endpoints: contract_endpoints
+            .into_iter()
+            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v.parse()?)) })
+            .collect::<Result<_, _>>()?,
+        threaded: true,
+        data_dir: datadir,
+    };
+
+    info!("{:?}", config);
+
+    let runtime = Runtime::init(config)?;
+
+    Ok(runtime)
+}
+
 #[cfg(target_os = "android")]
-fn start_logger() {
+fn _start_logger() {
     android_logger::init_once(
         android_logger::Config::default().with_min_level(log::Level::Debug),
     );
 }
 
 #[cfg(not(target_os = "android"))]
-fn start_logger() {
+fn _start_logger() {
     env::set_var("RUST_LOG", "trace");
     ::env_logger::init();
     log::set_max_level(LevelFilter::Trace);
@@ -222,9 +261,9 @@ pub extern "C" fn start_rgb(
     threaded: bool,
     datadir: *mut c_char,
 ) -> CResult {
-    start_logger();
+    _start_logger();
 
-    info!("Starting RGB...");
+    info!("Starting RGB in connected mode...");
 
     _start_rgb(
         network,
@@ -234,6 +273,18 @@ pub extern "C" fn start_rgb(
         datadir,
     )
     .into()
+}
+
+#[no_mangle]
+pub extern "C" fn run_rgb_embedded(
+    network: *const c_char,
+    datadir: *const c_char,
+) -> CResult {
+    _start_logger();
+
+    info!("Starting RGB in embedded mode...");
+
+    _run_rgb_embedded(network, datadir).into()
 }
 
 #[derive(Debug, Deserialize)]

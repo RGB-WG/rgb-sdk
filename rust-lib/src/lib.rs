@@ -34,9 +34,7 @@ trait CReturnType: Sized + 'static {
 
         if other.ty != ty {
             return Err(RequestError::Runtime(
-                rgb::error::BootstrapError::ArgParseError(
-                    s!("Type mismatch"),
-                ),
+                rgb::error::BootstrapError::ArgParseError(s!("Type mismatch")),
             ));
         }
 

@@ -127,6 +127,30 @@ where
     }
 }
 
+#[repr(C)]
+pub struct CResultString {
+    result: CResultValue,
+    inner: *const c_char,
+}
+
+impl From<Result<String, RequestError>> for CResultString
+where
+    RequestError: std::fmt::Debug,
+{
+    fn from(other: Result<String, RequestError>) -> Self {
+        match other {
+            Ok(d) => CResultString {
+                result: CResultValue::Ok,
+                inner: string_to_ptr(d),
+            },
+            Err(e) => CResultString {
+                result: CResultValue::Err,
+                inner: string_to_ptr(format!("{:?}", e)),
+            },
+        }
+    }
+}
+
 #[derive(Debug, Display, From, Error)]
 #[display(doc_comments)]
 #[non_exhaustive]
@@ -411,7 +435,7 @@ pub extern "C" fn transfer(
 fn _asset_allocations(
     runtime: &COpaqueStruct,
     contract_id: *const c_char,
-) -> Result<(), RequestError> {
+) -> Result<String, RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
     let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
@@ -419,23 +443,23 @@ fn _asset_allocations(
 
     debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
 
-    runtime.asset_allocations(contract_id)?;
-
-    Ok(())
+    let response = runtime.asset_allocations(contract_id)?;
+    let json_response = serde_json::to_string(&response)?;
+    Ok(json_response)
 }
 
 #[no_mangle]
 pub extern "C" fn asset_allocations(
     runtime: &COpaqueStruct,
     contract_id: *const c_char,
-) -> CResult {
+) -> CResultString {
     _asset_allocations(runtime, contract_id).into()
 }
 
 fn _outpoint_assets(
     runtime: &COpaqueStruct,
     outpoint: *const c_char,
-) -> Result<(), RequestError> {
+) -> Result<String, RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
     let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
@@ -443,15 +467,15 @@ fn _outpoint_assets(
 
     debug!("OutpointAssets {{ outpoint: {:?} }}", outpoint);
 
-    runtime.outpoint_assets(outpoint)?;
-
-    Ok(())
+    let response = runtime.outpoint_assets(outpoint)?;
+    let json_response = serde_json::to_string(&response)?;
+    Ok(json_response)
 }
 
 #[no_mangle]
 pub extern "C" fn outpoint_assets(
     runtime: &COpaqueStruct,
     outpoint: *const c_char,
-) -> CResult {
+) -> CResultString {
     _outpoint_assets(runtime, outpoint).into()
 }

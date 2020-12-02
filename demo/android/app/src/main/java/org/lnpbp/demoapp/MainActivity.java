@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                             );
                             Log.d(TAG, "issue completed");
 
+                            /*
                             final String consignment_file = app.dataDir + "/" + UUID.randomUUID().toString();
                             final String transaction_file = app.dataDir + "/" + UUID.randomUUID().toString();
                             final String invoice = "rgb20:outpoint1mzu8vz3jly3rzzkdpph583yahv9wktljtfcln6pe2le6n7ehqulstu967t?amount=5&asset=rgb:id1yqqqxya60n725eszngdx8yvwh3pxyk0sp9fszmzxze3nzhgm76ur4dqf2f7gy";
@@ -60,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
                                 Arrays.asList(inputs), Arrays.asList(allocation), invoice,
                                 prototypePsbt, consignment_file, transaction_file);
                             Log.d(TAG, "transfer completed");
+                            */
+
+                            String assets = runtime.outpointAssets("5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0");
+                            Log.i(TAG, "assets: " + assets);
                         } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                         }

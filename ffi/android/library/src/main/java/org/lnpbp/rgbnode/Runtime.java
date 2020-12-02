@@ -16,24 +16,23 @@ public class Runtime {
     private final COpaqueStruct runtime;
     private final ObjectMapper mapper;
 
-    public Runtime(final String network, final String stashEndpoint, final HashMap<String, String> contractEndpoints, final boolean threaded, final String datadir) throws RuntimeException {
+    public Runtime(final String network, final String datadir) throws RuntimeException {
         mapper = new ObjectMapper();
 
-        final StartRgbArgs args = new StartRgbArgs(network, stashEndpoint, contractEndpoints, threaded, datadir);
+        final StartRgbArgs args = new StartRgbArgs(network, datadir);
         try {
-            final String contractEndpointsStr = mapper.writeValueAsString(contractEndpoints);
-            this.runtime = rgb_node.start_rgb(network, stashEndpoint, contractEndpointsStr, threaded, datadir);
-        } catch (JsonProcessingException e) {
+            this.runtime = rgb_node.run_rgb_embedded(network, datadir);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void issue(final String network, final String ticker, final String name, final String description, final String issueStructure, final List<IssueArgs.CoinAllocation> allocations, final Integer precision, final List<IssueArgs.SealSpec> pruneSeals, final Integer dustLimit) throws RuntimeException {
-        final IssueArgs args = new IssueArgs(network, ticker, name, description, issueStructure, allocations, precision, pruneSeals, dustLimit);
+    public void issue(final String network, final String ticker, final String name, final String description, final String issueStructure, final List<IssueArgs.CoinAllocation> allocations, final Integer precision, final List<IssueArgs.SealSpec> pruneSeals) throws RuntimeException {
+        final IssueArgs args = new IssueArgs(network, ticker, name, description, issueStructure, allocations, precision, pruneSeals);
         try {
             final String jsonArgs = mapper.writeValueAsString(args);
             rgb_node.issue(this.runtime, jsonArgs);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -44,7 +43,7 @@ public class Runtime {
             final String inputsStr = mapper.writeValueAsString(inputs);
             final String allocateStr = mapper.writeValueAsString(allocate);
             rgb_node.transfer(this.runtime, inputsStr, allocateStr, invoice, prototype_psbt, consignment_file, transaction_file);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

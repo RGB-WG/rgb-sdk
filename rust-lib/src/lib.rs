@@ -14,12 +14,14 @@ use serde::Deserialize;
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
-use rgb::lnpbp::lnp::transport::ZmqSocketAddr;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
 use rgb::rgbd::ContractName;
 use rgb::util::SealSpec;
+
+#[macro_use]
+extern crate amplify;
 
 #[macro_use]
 extern crate amplify_derive;
@@ -32,9 +34,7 @@ trait CReturnType: Sized + 'static {
 
         if other.ty != ty {
             return Err(RequestError::Runtime(
-                rgb::error::BootstrapError::ArgParseError(
-                    "Type mismatch".to_string(),
-                ),
+                rgb::error::BootstrapError::ArgParseError(s!("Type mismatch")),
             ));
         }
 
@@ -162,7 +162,7 @@ enum RequestError {
 
 fn _start_rgb(
     network: *mut c_char,
-    stash_endpoint: *mut c_char,
+    stash_rpc_endpoint: *const c_char,
     contract_endpoints: *mut c_char,
     threaded: bool,
     datadir: *mut c_char,
@@ -170,9 +170,8 @@ fn _start_rgb(
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
-    let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
-    let stash_endpoint =
-        ZmqSocketAddr::Ipc(c_stash_endpoint.to_str()?.to_string());
+    let c_stash_rpc_endpoint = unsafe { CStr::from_ptr(stash_rpc_endpoint) };
+    let stash_rpc_endpoint = c_stash_rpc_endpoint.to_str()?.to_string();
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
@@ -182,14 +181,52 @@ fn _start_rgb(
 
     let config = Config {
         network: network,
-        stash_endpoint: stash_endpoint,
+        stash_rpc_endpoint: stash_rpc_endpoint,
         contract_endpoints: contract_endpoints
             .into_iter()
-            .map(|(k, v)| -> Result<_, RequestError> {
-                Ok((k, ZmqSocketAddr::Ipc(v.parse()?)))
-            })
+            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v)) })
             .collect::<Result<_, _>>()?,
         threaded: threaded,
+        data_dir: datadir,
+        ..Config::default()
+    };
+
+    info!("{:?}", config);
+
+    let runtime = Runtime::init(config)?;
+
+    Ok(runtime)
+}
+
+fn _run_rgb_embedded(
+    network: *const c_char,
+    datadir: *const c_char,
+) -> Result<Runtime, RequestError> {
+    let c_network = unsafe { CStr::from_ptr(network) };
+    let network = bp::Chain::from_str(c_network.to_str()?)?;
+
+    let c_datadir = unsafe { CStr::from_ptr(datadir) };
+    let datadir = c_datadir.to_str()?.to_string();
+
+    let contract_endpoints: HashMap<ContractName, String> =
+        [(ContractName::Fungible, s!("inproc://fungible-rpc"))]
+            .iter()
+            .cloned()
+            .collect();
+    let stash_rpc_endpoint = s!("inproc://stash-rpc");
+    let stash_pub_endpoint = s!("inproc://stash-pub");
+    let fungible_pub_endpoint = s!("inproc://fungible-pub");
+
+    let config = Config {
+        network: network,
+        stash_rpc_endpoint: stash_rpc_endpoint,
+        stash_pub_endpoint: stash_pub_endpoint,
+        fungible_pub_endpoint: fungible_pub_endpoint,
+        contract_endpoints: contract_endpoints
+            .into_iter()
+            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v.parse()?)) })
+            .collect::<Result<_, _>>()?,
+        threaded: true,
         data_dir: datadir,
     };
 
@@ -201,14 +238,14 @@ fn _start_rgb(
 }
 
 #[cfg(target_os = "android")]
-fn start_logger() {
+fn _start_logger() {
     android_logger::init_once(
         android_logger::Config::default().with_min_level(log::Level::Debug),
     );
 }
 
 #[cfg(not(target_os = "android"))]
-fn start_logger() {
+fn _start_logger() {
     env::set_var("RUST_LOG", "trace");
     ::env_logger::init();
     log::set_max_level(LevelFilter::Trace);
@@ -217,23 +254,35 @@ fn start_logger() {
 #[no_mangle]
 pub extern "C" fn start_rgb(
     network: *mut c_char,
-    stash_endpoint: *mut c_char,
+    stash_rpc_endpoint: *const c_char,
     contract_endpoints: *mut c_char,
     threaded: bool,
     datadir: *mut c_char,
 ) -> CResult {
-    start_logger();
+    _start_logger();
 
-    info!("Starting RGB...");
+    info!("Starting RGB in connected mode...");
 
     _start_rgb(
         network,
-        stash_endpoint,
+        stash_rpc_endpoint,
         contract_endpoints,
         threaded,
         datadir,
     )
     .into()
+}
+
+#[no_mangle]
+pub extern "C" fn run_rgb_embedded(
+    network: *const c_char,
+    datadir: *const c_char,
+) -> CResult {
+    _start_logger();
+
+    info!("Starting RGB in embedded mode...");
+
+    _run_rgb_embedded(network, datadir).into()
 }
 
 #[derive(Debug, Deserialize)]

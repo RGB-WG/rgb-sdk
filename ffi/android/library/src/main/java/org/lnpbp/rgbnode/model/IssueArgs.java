@@ -15,9 +15,8 @@ public class IssueArgs {
     private final List<CoinAllocation> allocations;
     private final Integer precision;
     private final List<SealSpec> pruneSeals;
-    private final Integer dustLimit;
 
-    public IssueArgs(String network, String ticker, String name, String description, String issueStructure, List<CoinAllocation> allocations, Integer precision, List<SealSpec> pruneSeals, Integer dustLimit) {
+    public IssueArgs(String network, String ticker, String name, String description, String issueStructure, List<CoinAllocation> allocations, Integer precision, List<SealSpec> pruneSeals) {
         this.network = network;
         this.ticker = ticker;
         this.name = name;
@@ -26,7 +25,6 @@ public class IssueArgs {
         this.allocations = allocations;
         this.precision = precision;
         this.pruneSeals = pruneSeals;
-        this.dustLimit = dustLimit;
     }
 
     public String getNetwork() {
@@ -59,10 +57,6 @@ public class IssueArgs {
 
     public List<SealSpec> getPruneSeals() {
         return pruneSeals;
-    }
-
-    public Integer getDustLimit() {
-        return dustLimit;
     }
 
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)

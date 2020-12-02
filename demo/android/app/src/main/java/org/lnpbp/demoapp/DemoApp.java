@@ -8,21 +8,31 @@ import org.lnpbp.rgbnode.Runtime;
 import java.util.HashMap;
 
 public class DemoApp extends Application {
+
+    private static final String TAG = DemoApp.class.getSimpleName();
+
     private Runtime runtime;
+    public final String network = "testnet";
+    public String dataDir;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.i("RGB_NODE", "loading library");
-        System.loadLibrary("rgb_node");
+        final String libName = "rgb_node";
+        Log.i(TAG, String.format("Loading '%s' library", libName));
+        try {
+            System.loadLibrary(libName);
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, String.format("Error loading '%s' library: %s", libName, e.toString()));
+        }
+        this.dataDir = getFilesDir().toString();
 
-        final String datadir = getFilesDir().toString();
-        final String network = "testnet";
-
-        final HashMap contractEndpoints = new HashMap();
-        contractEndpoints.put("Fungible", String.format("lnpz://%s/%s/fungibled.rpc", datadir, network));
-        this.runtime = new Runtime(network, String.format("lnpz://%s/%s/stashd.rpc", datadir, network), contractEndpoints, true, datadir);
+        try {
+            this.runtime = new Runtime(this.network, this.dataDir);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
    }
 
     public Runtime getRuntime() {

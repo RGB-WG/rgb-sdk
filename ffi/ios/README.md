@@ -3,7 +3,8 @@
 ## Build
 
 In order to include RGB into iPhone, iPad or Mac application, on Mac OS,
-from the project root, run:
+first follow [main README's instructions](/README.md) and then, from the
+project root, run:
 
 ```bash
 # install dependencies

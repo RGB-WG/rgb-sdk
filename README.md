@@ -9,7 +9,9 @@ plus some sample applications.
 ## Building RGB SDK
 
 First, you'll need to [install Rust](https://www.rust-lang.org/tools/install),
-then follow the instructions specific to your language binding of choice.
+then clone this project (`git clone https://github.com/LNP-BP/rgb-sdk.git`),
+go to the project root (`cd rgb-sdk`) and, finally, follow the instructions
+specific to your language binding of choice.
 
 ### Language bindings
 

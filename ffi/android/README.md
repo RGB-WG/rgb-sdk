@@ -2,8 +2,9 @@
 
 ## Build
 
-In order to build Android bindings, from the project root follow the
-[Local](#local) or [In docker](#in-docker) instructions.
+In order to build Android bindings, first follow
+[main README's instructions](/README.md) and then, from the project root,
+follow the [Local](#local) or [In docker](#in-docker) instructions.
 
 Both instructions will generate the artifacts (`library-debug.aar` and
 `library-release.aar`) in `ffi/android/library/build/outputs/aar/`.

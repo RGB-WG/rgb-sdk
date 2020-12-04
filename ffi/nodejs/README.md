@@ -2,8 +2,9 @@
 
 ## Build
 
-In order to build Node.js bindings, from the project root follow the
-[Local](#local) or [In docker](#in-docker) instructions.
+In order to build Node.js bindings, first follow
+[main README's instructions](/README.md) and then, from the project root,
+follow the [Local](#local) or [In docker](#in-docker) instructions.
 
 Both instructions will generate the files `librgb.so` in `rust-lib/target/debug/`
 and `rgb_node.node` in `ffi/nodejs/build/Release/`.

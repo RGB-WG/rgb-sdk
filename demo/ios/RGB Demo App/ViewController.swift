@@ -66,7 +66,7 @@ class ViewController: UIViewController {
             )
             try runtime.transferAsset(tArgs)
             
-            transferResult.text = "Transfered successfully"
+            transferResult.text = "Transferred successfully"
         } catch {
             transferResult.text = "Failed to transfer asset: \(error.localizedDescription)"
         }

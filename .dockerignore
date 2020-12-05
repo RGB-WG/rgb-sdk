@@ -8,8 +8,10 @@
 **/*.rs.bk
 **/*.so
 **/.gradle
+**/__pycache__
 **/node_modules
 **/package-lock.json
+**/swig_wrap.cpp
 **/swig_wrap.cxx
 
 /ffi/android/build
@@ -19,6 +21,10 @@
 
 /ffi/nodejs/build
 /ffi/nodejs/Dockerfile
+
+/ffi/python/build
+/ffi/python/Dockerfile
+/ffi/python/rgb_node.py
 
 # IDEs data
 **/*.swo

@@ -17,6 +17,7 @@ The following bindings are available:
 - [Android](/ffi/android)
 - [iOS](/ffi/ios)
 - [Node.js](/ffi/nodejs)
+- [Python](/ffi/python)
 
 ## Developer guidelines
 

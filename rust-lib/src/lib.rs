@@ -4,8 +4,7 @@ use std::collections::HashMap;
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
-use std::os::raw::{c_char, c_int, c_void};
-use std::slice;
+use std::os::raw::{c_char, c_void};
 use std::str::FromStr;
 
 use log::LevelFilter;
@@ -16,12 +15,12 @@ use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
 use rgb::lnpbp::rgb::{ContractId, FromBech32};
 use rgb::lnpbp::rgb::Consignment;
-use rgb::lnpbp::strict_encoding::strict_decode;
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::SealSpec;
+use rgb::util::file::ReadWrite;
 
 #[macro_use]
 extern crate amplify;
@@ -208,23 +207,6 @@ enum RequestError {
     /// Strict encoding error: {_0}
     #[from]
     StrictEncoding(rgb::lnpbp::strict_encoding::Error),
-}
-
-fn _get_consignment(
-    consignment_bytes: *const u8,
-    consignment_length: c_int,
-) -> Result<Consignment, RequestError> {
-    if consignment_bytes.is_null() {
-        return Err(RequestError::Input(s!(
-            "consignment bytes cannot be null"
-        )));
-    };
-    let consignment_bytes = unsafe {
-        slice::from_raw_parts(consignment_bytes, consignment_length as usize)
-    };
-    trace!("consignment bytes: {:x?}", consignment_bytes);
-    let consignment: Consignment = strict_decode(&consignment_bytes)?;
-    Ok(consignment)
 }
 
 fn _start_rgb(
@@ -516,13 +498,14 @@ pub extern "C" fn outpoint_assets(
 
 fn _accept(
     runtime: &COpaqueStruct,
-    consignment_bytes: *const u8,
-    consignment_length: c_int,
+    consignment_file: *const c_char,
     reveal_outpoints: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let consignment = _get_consignment(consignment_bytes, consignment_length)?;
+    let filename = ptr_to_string(consignment_file)?;
+    debug!("Reading consignment from {}", filename);
+    let consignment = Consignment::read_file(filename.into())?;
 
     let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
         serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
@@ -541,14 +524,12 @@ fn _accept(
 #[no_mangle]
 pub extern "C" fn accept(
     runtime: &COpaqueStruct,
-    consignment_bytes: *const u8,
-    consignment_length: c_int,
+    consignment_file: *const c_char,
     reveal_outpoints: *const c_char,
 ) -> CResult {
     _accept(
         runtime,
-        consignment_bytes,
-        consignment_length,
+        consignment_file,
         reveal_outpoints,
     )
     .into()
@@ -556,12 +537,13 @@ pub extern "C" fn accept(
 
 fn _validate(
     runtime: &COpaqueStruct,
-    consignment_bytes: *const u8,
-    consignment_length: c_int,
+    consignment_file: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let consignment = _get_consignment(consignment_bytes, consignment_length)?;
+    let filename = ptr_to_string(consignment_file)?;
+    debug!("Reading consignment from {}", filename);
+    let consignment = Consignment::read_file(filename.into())?;
 
     trace!("ValidateArgs {{ consignment: {:?} }}", consignment);
 
@@ -573,8 +555,7 @@ fn _validate(
 #[no_mangle]
 pub extern "C" fn validate(
     runtime: &COpaqueStruct,
-    consignment_bytes: *const u8,
-    consignment_length: c_int,
+    consignment_file: *const c_char,
 ) -> CResult {
-    _validate(runtime, consignment_bytes, consignment_length).into()
+    _validate(runtime, consignment_file).into()
 }

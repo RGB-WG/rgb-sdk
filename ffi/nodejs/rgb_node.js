@@ -29,10 +29,10 @@ exports.outpointAssets = function (runtime, outpoint) {
     return lib.outpoint_assets(runtime, outpoint)
 }
 
-exports.accept = function (runtime, consignment, reveal_outpoints) {
-  return lib.accept(runtime, array_to_pointer(consignment), consignment.length, reveal_outpoints)
+exports.accept = function (runtime, consignment_file, reveal_outpoints) {
+  return lib.accept(runtime, consignment_file, reveal_outpoints)
 }
 
-exports.validate = function (runtime, consignment) {
-  return lib.validate(runtime, array_to_pointer(consignment), consignment.length)
+exports.validate = function (runtime, consignment_file) {
+  return lib.validate(runtime, consignment_file)
 }

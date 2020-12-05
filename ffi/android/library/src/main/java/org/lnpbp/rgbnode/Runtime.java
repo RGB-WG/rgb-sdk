@@ -47,4 +47,20 @@ public class Runtime {
             throw new RuntimeException(e);
         }
     }
+
+    public String assetAllocations(String contractId) throws RuntimeException {
+        try {
+            return rgb_node.asset_allocations(this.runtime, contractId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String outpointAssets(String outpoint) throws RuntimeException {
+        try {
+            return rgb_node.outpoint_assets(this.runtime, outpoint);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

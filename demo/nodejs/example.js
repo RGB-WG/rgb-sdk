@@ -6,8 +6,18 @@ const config = {
     contract_endpoints: {
         Fungible: "lnpz:/tmp/rgb-node/testnet/fungibled.rpc"
     },
-    threaded: false,
+    threaded: true,
     datadir: "/tmp/rgb-node/"
+}
+
+const issueData = {
+    network: "testnet",
+    ticker: "USDT",
+    name: "USD Tether",
+    issue_structure: "SingleIssue",
+    allocations: [{ coins: 100, vout:0, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }],
+    precision: 0,
+    prune_seals: [],
 }
 
 const transferData = {
@@ -21,17 +31,34 @@ const transferData = {
     transaction_file: "/tmp/rgb-node/output/transaction"
 }
 
-ex.start_rgb(config.network, config.stash_endpoint, JSON.stringify(config.contract_endpoints), config.threaded,
-             config.datadir)
-    /*.then(r => ex.issue(r, JSON.stringify({
-        network: "testnet",
-        ticker: "USDT",
-        name: "USD Tether",
-        issue_structure: "SingleIssue",
-        allocations: [{ coins: 100, vout:0, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }],
-        precision: 0,
-    })))*/
-    .then(r => ex.transfer(r, JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
-                           transferData.invoice, transferData.prototype_psbt, transferData.consignment_file,
-                           transferData.transaction_file))
-    .catch(e => console.log(e))
+var runtime = null
+
+async function main() {
+    await ex.start_rgb(
+        config.network, config.stash_endpoint, JSON.stringify(config.contract_endpoints), config.threaded, config.datadir)
+    .then(r => {
+        runtime = r
+        return ex.issue(runtime, JSON.stringify(issueData))
+    })
+    /*
+    .then(() => {
+        return ex.transfer(runtime, JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
+           transferData.invoice, transferData.prototype_psbt, transferData.consignment_file,
+           transferData.transaction_file)
+    })
+    .then(() => {
+        return ex.asset_allocations(runtime, 'rgb1w82xuaxz6lp9symrp3f4r47rylkkxsh506qzkt2n2kjfhrhrt03qrrcm0g')
+    })
+    */
+    .then(() => {
+        return ex.outpoint_assets(runtime, '5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0')
+    })
+    .then(assets => {
+        console.log('assets: ' + assets)
+    })
+}
+
+main().catch( e => {
+    console.error('ERR: ' + e)
+    process.exit(1)
+})

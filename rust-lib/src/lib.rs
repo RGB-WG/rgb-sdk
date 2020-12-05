@@ -7,13 +7,14 @@ use std::hash::{Hash, Hasher};
 use std::os::raw::{c_char, c_void};
 use std::str::FromStr;
 
-use log::{info, LevelFilter};
+use log::LevelFilter;
 
 use serde::Deserialize;
 
 use rgb::lnpbp::bitcoin::OutPoint;
 
 use rgb::lnpbp::bp;
+use rgb::lnpbp::rgb::{ContractId, FromBech32};
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::*;
@@ -25,6 +26,9 @@ extern crate amplify;
 
 #[macro_use]
 extern crate amplify_derive;
+
+#[macro_use]
+extern crate log;
 
 trait CReturnType: Sized + 'static {
     fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, RequestError> {
@@ -123,10 +127,38 @@ where
     }
 }
 
+#[repr(C)]
+pub struct CResultString {
+    result: CResultValue,
+    inner: *const c_char,
+}
+
+impl From<Result<String, RequestError>> for CResultString
+where
+    RequestError: std::fmt::Debug,
+{
+    fn from(other: Result<String, RequestError>) -> Self {
+        match other {
+            Ok(d) => CResultString {
+                result: CResultValue::Ok,
+                inner: string_to_ptr(d),
+            },
+            Err(e) => CResultString {
+                result: CResultValue::Err,
+                inner: string_to_ptr(format!("{:?}", e)),
+            },
+        }
+    }
+}
+
 #[derive(Debug, Display, From, Error)]
 #[display(doc_comments)]
 #[non_exhaustive]
 enum RequestError {
+    /// Bech32 error: {_0}
+    #[from]
+    Bech32(rgb::lnpbp::rgb::bech32::Error),
+
     /// Input value is not a JSON object or JSON parse error: {_0}
     #[from]
     Json(serde_json::Error),
@@ -158,6 +190,10 @@ enum RequestError {
     /// Impossible error: {_0}
     #[from]
     Infallible(std::convert::Infallible),
+
+    /// Outpoint parsing error: {_0}
+    #[from]
+    Outpoint(rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError),
 }
 
 fn _start_rgb(
@@ -394,4 +430,52 @@ pub extern "C" fn transfer(
         transaction_file,
     )
     .into()
+}
+
+fn _asset_allocations(
+    runtime: &COpaqueStruct,
+    contract_id: *const c_char,
+) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
+    let contract_id = ContractId::from_bech32_str(c_contract_id.to_str()?)?;
+
+    debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
+
+    let response = runtime.asset_allocations(contract_id)?;
+    let json_response = serde_json::to_string(&response)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn asset_allocations(
+    runtime: &COpaqueStruct,
+    contract_id: *const c_char,
+) -> CResultString {
+    _asset_allocations(runtime, contract_id).into()
+}
+
+fn _outpoint_assets(
+    runtime: &COpaqueStruct,
+    outpoint: *const c_char,
+) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
+    let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
+
+    debug!("OutpointAssets {{ outpoint: {:?} }}", outpoint);
+
+    let response = runtime.outpoint_assets(outpoint)?;
+    let json_response = serde_json::to_string(&response)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn outpoint_assets(
+    runtime: &COpaqueStruct,
+    outpoint: *const c_char,
+) -> CResultString {
+    _outpoint_assets(runtime, outpoint).into()
 }

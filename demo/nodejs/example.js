@@ -21,10 +21,12 @@ const issueData = {
     prune_seals: [],
 }
 
-const consignmentPath = '../../../rgb-node/sample/consignment.rgb'
+const consignmentPath = '/tmp/rgb-node/output/consignment.rgb'
+
+const inputOutpoint = '0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0'
 
 const transferData = {
-    inputs: ["0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0"],
+    inputs: [inputOutpoint],
     allocate: [
         { coins: 100, vout:1, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }
     ],
@@ -37,15 +39,14 @@ const transferData = {
 var runtime = null
 
 async function main() {
-    console.log("RGB demo")
-
     await rgbNode.startRgb(
         config.network, config.stash_endpoint, config.contract_endpoints, config.threaded, config.datadir)
     .then(r => {
         console.log("RGB node runtime has started")
         runtime = r
+        return rgbNode.issue(runtime, issueData)
     })
-    /*rgbNode.issue(runtime, issueData)
+    /*
     .then(() => {
         return rgbNode.transfer(runtime, transferData.inputs, transferData.allocate,
            transferData.invoice, transferData.prototype_psbt, transferData.consignment_file,
@@ -54,26 +55,25 @@ async function main() {
     .then(() => {
         return rgbNode.assetAllocations(runtime, 'rgb1w82xuaxz6lp9symrp3f4r47rylkkxsh506qzkt2n2kjfhrhrt03qrrcm0g')
     })
-    .then(() => {
-        console.log("Querying assets")
-        return rgbNode.outpointAssets(runtime, '0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0')
-    })
-    .then(res => {
-        console.log("Asset list for 0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0")
-        console.log(res)
-    })
+    .then(allocations => {
     */
+    .then(() => {
+        //console.log("Allocations: " + allocations)
+        console.log("Querying assets")
+        return rgbNode.outpointAssets(runtime, inputOutpoint)
+    })
     .then(assets => {
-        // consignment = fs.readFileSync(consignmentPath)
+        console.log("Asset list for '" + inputOutpoint + "': " + assets)
+        console.log(assets)
         return rgbNode.validate(runtime, consignmentPath)
     })
-    .then(res => {
-        console.log("Validation result:")
-        console.log(res)
+    .then(() => {
+        console.log("Validation succeded")
     })
 }
 
-main().catch( e => {
+console.log("RGB demo")
+main().catch(e => {
     console.error('ERR: ' + e)
     process.exit(1)
 })

@@ -8,7 +8,7 @@ const config = {
         Fungible: "lnpz:/tmp/rgb-node/testnet/fungibled.rpc"
     },
     threaded: true,
-    datadir: "/tmp/rgb-node/"
+    datadir: "/tmp/rgb-node"
 }
 
 const issueData = {
@@ -21,7 +21,7 @@ const issueData = {
     prune_seals: [],
 }
 
-const consignmentPath = '/tmp/rgb-node/output/consignment'
+const consignmentPath = '../../../rgb-node/sample/consignment.rgb'
 
 const transferData = {
     inputs: ["0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0"],
@@ -37,13 +37,15 @@ const transferData = {
 var runtime = null
 
 async function main() {
+    console.log("RGB demo")
+
     await rgbNode.startRgb(
         config.network, config.stash_endpoint, config.contract_endpoints, config.threaded, config.datadir)
     .then(r => {
+        console.log("RGB node runtime has started")
         runtime = r
-        return rgbNode.issue(runtime, issueData)
     })
-    /*
+    /*rgbNode.issue(runtime, issueData)
     .then(() => {
         return rgbNode.transfer(runtime, transferData.inputs, transferData.allocate,
            transferData.invoice, transferData.prototype_psbt, transferData.consignment_file,
@@ -52,14 +54,22 @@ async function main() {
     .then(() => {
         return rgbNode.assetAllocations(runtime, 'rgb1w82xuaxz6lp9symrp3f4r47rylkkxsh506qzkt2n2kjfhrhrt03qrrcm0g')
     })
-    */
     .then(() => {
-        return rgbNode.outpointAssets(runtime, '5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0')
+        console.log("Querying assets")
+        return rgbNode.outpointAssets(runtime, '0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0')
     })
+    .then(res => {
+        console.log("Asset list for 0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0")
+        console.log(res)
+    })
+    */
     .then(assets => {
-        console.log('assets: ' + assets)
-        consignment = fs.readFileSync(consignmentPath)
-        return rgbNode.validate(runtime, consignment)
+        // consignment = fs.readFileSync(consignmentPath)
+        return rgbNode.validate(runtime, consignmentPath)
+    })
+    .then(res => {
+        console.log("Validation result:")
+        console.log(res)
     })
 }
 

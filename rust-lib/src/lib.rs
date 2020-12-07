@@ -13,14 +13,14 @@ use serde::Deserialize;
 
 use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
-use rgb::lnpbp::rgb::{ContractId, FromBech32};
 use rgb::lnpbp::rgb::Consignment;
+use rgb::lnpbp::rgb::{ContractId, FromBech32};
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
-use rgb::util::SealSpec;
 use rgb::util::file::ReadWrite;
+use rgb::util::SealSpec;
 
 #[macro_use]
 extern crate amplify;
@@ -527,12 +527,7 @@ pub extern "C" fn accept(
     consignment_file: *const c_char,
     reveal_outpoints: *const c_char,
 ) -> CResult {
-    _accept(
-        runtime,
-        consignment_file,
-        reveal_outpoints,
-    )
-    .into()
+    _accept(runtime, consignment_file, reveal_outpoints).into()
 }
 
 fn _validate(

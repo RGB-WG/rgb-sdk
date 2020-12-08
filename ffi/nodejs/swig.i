@@ -29,4 +29,17 @@
     $result = resolver->GetPromise();
 %}
 
+%inline %{
+    uint8_t *uint_array(int size) {
+        return (uint8_t *) malloc(size*sizeof(uint8_t));
+    }
+    void uint_array_set(uint8_t *a, int i, int val) {
+        a[i] = val;
+    }
+    // for debugging purposes
+    int uint_array_get(uint8_t *a, int i) {
+        return a[i];
+    }
+%}
+
 %include "../../rust-lib/rgb_node.h"

@@ -12,13 +12,14 @@ use log::LevelFilter;
 use serde::Deserialize;
 
 use rgb::lnpbp::bitcoin::OutPoint;
-
 use rgb::lnpbp::bp;
+use rgb::lnpbp::rgb::Consignment;
 use rgb::lnpbp::rgb::{ContractId, FromBech32};
 
 use rgb::fungible::{Invoice, IssueStructure, Outcoins};
-use rgb::i9n::*;
+use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
+use rgb::util::file::ReadWrite;
 use rgb::util::SealSpec;
 
 #[macro_use]
@@ -93,7 +94,7 @@ fn string_to_ptr(other: String) -> *const c_char {
     cstr.into_raw()
 }
 
-fn ptr_to_string(ptr: *mut c_char) -> Result<String, RequestError> {
+fn ptr_to_string(ptr: *const c_char) -> Result<String, RequestError> {
     unsafe { Ok(CStr::from_ptr(ptr).to_string_lossy().into_owned()) }
 }
 
@@ -194,14 +195,26 @@ enum RequestError {
     /// Outpoint parsing error: {_0}
     #[from]
     Outpoint(rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError),
+
+    /// I/O error: {_0}
+    #[from]
+    Io(std::io::Error),
+
+    /// Input error: {_0}
+    #[from]
+    Input(String),
+
+    /// Strict encoding error: {_0}
+    #[from]
+    StrictEncoding(rgb::lnpbp::strict_encoding::Error),
 }
 
 fn _start_rgb(
-    network: *mut c_char,
+    network: *const c_char,
     stash_rpc_endpoint: *const c_char,
-    contract_endpoints: *mut c_char,
+    contract_endpoints: *const c_char,
     threaded: bool,
-    datadir: *mut c_char,
+    datadir: *const c_char,
 ) -> Result<Runtime, RequestError> {
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
@@ -289,11 +302,11 @@ fn _start_logger() {
 
 #[no_mangle]
 pub extern "C" fn start_rgb(
-    network: *mut c_char,
+    network: *const c_char,
     stash_rpc_endpoint: *const c_char,
-    contract_endpoints: *mut c_char,
+    contract_endpoints: *const c_char,
     threaded: bool,
-    datadir: *mut c_char,
+    datadir: *const c_char,
 ) -> CResult {
     _start_logger();
 
@@ -339,7 +352,7 @@ struct IssueArgs {
 
 fn _issue(
     runtime: &COpaqueStruct,
-    json: *mut c_char,
+    json: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
     let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
@@ -360,18 +373,21 @@ fn _issue(
 }
 
 #[no_mangle]
-pub extern "C" fn issue(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
+pub extern "C" fn issue(
+    runtime: &COpaqueStruct,
+    json: *const c_char,
+) -> CResult {
     _issue(runtime, json).into()
 }
 
 fn _transfer(
     runtime: &COpaqueStruct,
-    inputs: *mut c_char,
-    allocate: *mut c_char,
-    invoice: *mut c_char,
-    prototype_psbt: *mut c_char,
-    consignment_file: *mut c_char,
-    transaction_file: *mut c_char,
+    inputs: *const c_char,
+    allocate: *const c_char,
+    invoice: *const c_char,
+    prototype_psbt: *const c_char,
+    consignment_file: *const c_char,
+    transaction_file: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
@@ -413,12 +429,12 @@ fn _transfer(
 #[no_mangle]
 pub extern "C" fn transfer(
     runtime: &COpaqueStruct,
-    inputs: *mut c_char,
-    allocate: *mut c_char,
-    invoice: *mut c_char,
-    prototype_psbt: *mut c_char,
-    consignment_file: *mut c_char,
-    transaction_file: *mut c_char,
+    inputs: *const c_char,
+    allocate: *const c_char,
+    invoice: *const c_char,
+    prototype_psbt: *const c_char,
+    consignment_file: *const c_char,
+    transaction_file: *const c_char,
 ) -> CResult {
     _transfer(
         runtime,
@@ -478,4 +494,63 @@ pub extern "C" fn outpoint_assets(
     outpoint: *const c_char,
 ) -> CResultString {
     _outpoint_assets(runtime, outpoint).into()
+}
+
+fn _accept(
+    runtime: &COpaqueStruct,
+    consignment_file: *const c_char,
+    reveal_outpoints: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let filename = ptr_to_string(consignment_file)?;
+    debug!("Reading consignment from {}", filename);
+    let consignment = Consignment::read_file(filename.into())?;
+
+    let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
+        serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
+
+    trace!(
+        "AcceptArgs {{ consignment: {:?}, reveal_outpoints: {:?} }}",
+        consignment,
+        reveal_outpoints
+    );
+
+    runtime.accept(consignment, reveal_outpoints)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn accept(
+    runtime: &COpaqueStruct,
+    consignment_file: *const c_char,
+    reveal_outpoints: *const c_char,
+) -> CResult {
+    _accept(runtime, consignment_file, reveal_outpoints).into()
+}
+
+fn _validate(
+    runtime: &COpaqueStruct,
+    consignment_file: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let filename = ptr_to_string(consignment_file)?;
+    debug!("Reading consignment from {}", filename);
+    let consignment = Consignment::read_file(filename.into())?;
+
+    trace!("ValidateArgs {{ consignment: {:?} }}", consignment);
+
+    runtime.validate(consignment)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn validate(
+    runtime: &COpaqueStruct,
+    consignment_file: *const c_char,
+) -> CResult {
+    _validate(runtime, consignment_file).into()
 }

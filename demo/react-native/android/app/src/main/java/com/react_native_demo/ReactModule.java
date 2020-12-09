@@ -1,7 +1,5 @@
 package com.react_native_demo;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
@@ -10,7 +8,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.uimanager.IllegalViewOperationException;
 
 import org.lnpbp.rgbnode.Runtime;
 import org.lnpbp.rgbnode.model.IssueArgs;
@@ -45,8 +42,9 @@ public class ReactModule extends ReactContextBaseJavaModule {
             Promise promise) {
         try {
             final Runtime runtime = ((MainApplication) getCurrentActivity().getApplication()).getRuntime();
+
             final IssueArgs.CoinAllocation allocation = new IssueArgs.CoinAllocation((long) alloc_coins, alloc_vout, alloc_txid);
-            runtime.issue(network, ticker, name, description, issue_structure, Arrays.asList(allocation), precision, new ArrayList(), null);
+            runtime.issue(network, ticker, name, description, issue_structure, Arrays.asList(allocation), precision, new ArrayList());
 
             WritableMap map = Arguments.createMap();
             promise.resolve(map);

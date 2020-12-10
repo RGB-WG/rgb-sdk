@@ -14,6 +14,7 @@ import org.lnpbp.rgbnode.model.IssueArgs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class ReactModule extends ReactContextBaseJavaModule {
     public ReactModule(ReactApplicationContext reactContext) {
@@ -29,22 +30,21 @@ public class ReactModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void issue( // TODO: alternatively we can just take a json string here and pass that directly to the ffi for librgb
             int alloc_coins,
-            int alloc_vout,
-            String alloc_txid,
+            String alloc_outpoint,
 
             String network,
             String ticker,
             String name,
             String description,
-            String issue_structure,
             int precision,
 
             Promise promise) {
         try {
             final Runtime runtime = ((MainApplication) getCurrentActivity().getApplication()).getRuntime();
 
-            final IssueArgs.CoinAllocation allocation = new IssueArgs.CoinAllocation((long) alloc_coins, alloc_vout, alloc_txid);
-            runtime.issue(network, ticker, name, description, issue_structure, Arrays.asList(allocation), precision, new ArrayList());
+            final IssueArgs.OutpointCoins allocation = new IssueArgs.OutpointCoins((long) alloc_coins, alloc_outpoint);
+            runtime.issue(network, ticker, name, description, precision, Arrays.asList(allocation), new HashSet<IssueArgs.OutpointCoins>(), null, null);
+
 
             WritableMap map = Arguments.createMap();
             promise.resolve(map);

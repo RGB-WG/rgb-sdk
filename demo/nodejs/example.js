@@ -15,10 +15,17 @@ const issueData = {
     network: "testnet",
     ticker: "USDT",
     name: "USD Tether",
-    issue_structure: "SingleIssue",
-    allocations: [{ coins: 100, vout:0, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }],
+    description: "USD Tether description",
     precision: 0,
-    prune_seals: [],
+    allocations: [
+        {
+            coins: 6660000,
+            outpoint: '5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0',
+        }
+    ],
+    inflation: [],
+    renomination: null,
+    epoch: null,
 }
 
 const consignmentPath = '/tmp/rgb-node/output/consignment.rgb'
@@ -44,7 +51,9 @@ async function main() {
     .then(r => {
         console.log("RGB node runtime has started")
         runtime = r
-        return rgbNode.issue(runtime, issueData)
+        return rgbNode.issue(runtime, issueData.network, issueData.ticker, issueData.name, issueData.description,
+            issueData.precision, issueData.allocations, issueData.inflation, issueData.renomination,
+            issueData.epoch)
     })
     /*
     .then(() => {

@@ -1,26 +1,23 @@
 use std::any::TypeId;
 use std::collections::hash_map::DefaultHasher;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
-use std::os::raw::{c_char, c_void};
+use std::os::raw::{c_char, c_uchar, c_void};
 use std::str::FromStr;
 
 use log::LevelFilter;
-
-use serde::Deserialize;
 
 use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
 use rgb::lnpbp::rgb::Consignment;
 use rgb::lnpbp::rgb::{ContractId, FromBech32};
 
-use rgb::fungible::{Invoice, IssueStructure, Outcoins};
+use rgb::fungible::{Invoice, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
-use rgb::util::SealSpec;
 
 #[macro_use]
 extern crate amplify;
@@ -334,39 +331,56 @@ pub extern "C" fn run_rgb_embedded(
     _run_rgb_embedded(network, datadir).into()
 }
 
-#[derive(Debug, Deserialize)]
-struct IssueArgs {
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    network: bp::Chain,
-    ticker: String,
-    name: String,
-    #[serde(default)]
-    description: Option<String>,
-    issue_structure: IssueStructure,
-    #[serde(default)]
-    allocations: Vec<Outcoins>,
-    precision: u8,
-    #[serde(default)]
-    prune_seals: Vec<SealSpec>,
-}
-
 fn _issue(
     runtime: &COpaqueStruct,
-    json: *const c_char,
+    network: *const c_char,
+    ticker: *const c_char,
+    name: *const c_char,
+    description: *const c_char,
+    precision: c_uchar,
+    allocations: *const c_char,
+    inflation: *const c_char,
+    renomination: *const c_char,
+    epoch: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
-    let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
-    info!("{:?}", data);
+
+    let network = bp::Chain::from_str(&ptr_to_string(network)?)?;
+
+    let ticker = ptr_to_string(ticker)?;
+
+    let name = ptr_to_string(name)?;
+
+    let description: Option<String> = Some(ptr_to_string(description)?);
+
+    let allocations: Vec<OutpointCoins> =
+        serde_json::from_str(&ptr_to_string(allocations)?)?;
+
+    let inflation: HashSet<OutpointCoins> =
+        serde_json::from_str(&ptr_to_string(inflation)?)?;
+
+    let renomination: Option<OutPoint> =
+        serde_json::from_str(&ptr_to_string(renomination)?)?;
+
+    let epoch: Option<OutPoint> = serde_json::from_str(&ptr_to_string(epoch)?)?;
+
+    debug!(
+        "IssueArgs {{ network: {:?}, ticker: {:?}, name: {:?}, description: {:?}, \
+        precision: {:?}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
+        epoch: {:?} }}", network, ticker, name, description, precision, allocations, inflation,
+        renomination, epoch
+    );
 
     runtime.issue(
-        data.network,
-        data.ticker,
-        data.name,
-        data.description,
-        data.issue_structure,
-        data.allocations,
-        data.precision,
-        data.prune_seals,
+        network,
+        ticker,
+        name,
+        description,
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch,
     )?;
 
     Ok(())
@@ -375,9 +389,29 @@ fn _issue(
 #[no_mangle]
 pub extern "C" fn issue(
     runtime: &COpaqueStruct,
-    json: *const c_char,
+    network: *const c_char,
+    ticker: *const c_char,
+    name: *const c_char,
+    description: *const c_char,
+    precision: c_uchar,
+    allocations: *const c_char,
+    inflation: *const c_char,
+    renomination: *const c_char,
+    epoch: *const c_char,
 ) -> CResult {
-    _issue(runtime, json).into()
+    _issue(
+        runtime,
+        network,
+        ticker,
+        name,
+        description,
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch,
+    )
+    .into()
 }
 
 fn _transfer(
@@ -393,7 +427,7 @@ fn _transfer(
 
     let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
 
-    let allocate: Vec<Outcoins> =
+    let allocate: Vec<SealCoins> =
         serde_json::from_str(&ptr_to_string(allocate)?)?;
 
     let c_invoice = unsafe { CStr::from_ptr(invoice) };

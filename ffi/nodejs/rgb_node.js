@@ -12,8 +12,11 @@ exports.startRgb = function (network, stashEndpoint, contractEndpoints, threaded
   return lib.start_rgb(network, stashEndpoint, JSON.stringify(contractEndpoints), threaded, dataDir)
 }
 
-exports.issue = function (runtime, issueData) {
-  return lib.issue(runtime, JSON.stringify(issueData))
+exports.issue = function (
+    runtime, network, ticker, name, description, precision, allocations, inflation, renomination, epoch) {
+  return lib.issue(
+    runtime, network, ticker, name, description, precision, JSON.stringify(allocations),
+      JSON.stringify(inflation), JSON.stringify(renomination), JSON.stringify(epoch))
 }
 
 exports.transfer = function (runtime, inputs, allocate, invoice, prototypePsbt, consignmentFile, transactionFile) {

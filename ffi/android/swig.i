@@ -3,6 +3,8 @@
 #include "../../rust-lib/rgb_node.h"
 %}
 
+%typemap(jstype) unsigned char "byte"
+
 %typemap(jstype) CResult "COpaqueStruct"
 %typemap(javaout) CResult {
     return new COpaqueStruct($jnicall, $owner);

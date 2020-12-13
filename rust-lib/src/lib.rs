@@ -4,17 +4,21 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
-use std::os::raw::{c_char, c_uchar, c_void};
+use std::os::raw::{c_char, c_double, c_uchar, c_void};
 use std::str::FromStr;
 
 use log::LevelFilter;
 
 use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
-use rgb::lnpbp::rgb::Consignment;
-use rgb::lnpbp::rgb::{ContractId, FromBech32};
+use rgb::lnpbp::bp::blind::OutpointReveal;
+use rgb::lnpbp::client_side_validation::Conceal;
+use rgb::lnpbp::rgb::{Consignment, ToBech32};
+use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
 
-use rgb::fungible::{Invoice, OutpointCoins, SealCoins};
+use rgb::DataFormat;
+use rgb::api::reply::SyncFormat;
+use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
@@ -506,6 +510,108 @@ pub extern "C" fn asset_allocations(
     _asset_allocations(runtime, contract_id).into()
 }
 
+fn _export_asset(
+    runtime: &COpaqueStruct,
+    asset_id: *const c_char,
+) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+
+    debug!("Exporting asset: {:?}", asset_id);
+
+    let genesis = runtime.export_asset(asset_id)?;
+    let json_response = serde_json::to_string(&genesis)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn export_asset(
+    runtime: &COpaqueStruct,
+    asset_id: *const c_char,
+) -> CResultString {
+    _export_asset(runtime, asset_id).into()
+}
+
+fn _import_asset(
+    runtime: &COpaqueStruct,
+    asset_genesis: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let asset_genesis = Genesis::from_bech32_str(&ptr_to_string(asset_genesis)?)?;
+
+    debug!("Importing asset: {:?}", asset_genesis);
+
+    runtime.import_asset(asset_genesis)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn import_asset(
+    runtime: &COpaqueStruct,
+    asset_genesis: *const c_char,
+) -> CResult {
+    _import_asset(runtime, asset_genesis).into()
+}
+
+fn _invoice(
+    asset_id: *const c_char,
+    amount: c_double,
+    outpoint: *const c_char,
+) -> Result<String, RequestError> {
+    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+
+    let outpoint = OutPoint::from_str(&ptr_to_string(outpoint)?)?;
+
+    let outpoint_reveal = OutpointReveal::from(outpoint);
+    let invoice = Invoice {
+        contract_id: asset_id,
+        outpoint: Outpoint::BlindedUtxo(outpoint_reveal.conceal()),
+        amount: amount,
+    };
+
+    debug!("Created invoice: {:?}", invoice);
+
+    let json_response = serde_json::to_string(&invoice)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn invoice(
+    asset_id: *const c_char,
+    amount: c_double,
+    outpoint: *const c_char,
+) -> CResultString {
+    _invoice(asset_id, amount, outpoint).into()
+}
+
+fn _list_assets(
+    runtime: &COpaqueStruct,
+) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let SyncFormat(_data_format, data) = runtime.list_assets(DataFormat::Json)?;
+    let assets: Vec<Asset> = serde_json::from_slice(&data)?;
+
+    let assets: Vec<Asset> = assets
+        .iter()
+        .cloned()
+        .map(|mut a| { a.id = ContractId::from_bech32_str(&a.id().to_bech32_string()).unwrap(); a })
+        .collect();
+
+    let json_response = serde_json::to_string(&assets)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn list_assets(
+    runtime: &COpaqueStruct,
+) -> CResultString {
+    _list_assets(runtime).into()
+}
+
 fn _outpoint_assets(
     runtime: &COpaqueStruct,
     outpoint: *const c_char,
@@ -541,7 +647,7 @@ fn _accept(
     debug!("Reading consignment from {}", filename);
     let consignment = Consignment::read_file(filename.into())?;
 
-    let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
+    let reveal_outpoints: Vec<OutpointReveal> =
         serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
 
     trace!(

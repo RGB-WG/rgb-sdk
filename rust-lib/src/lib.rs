@@ -369,10 +369,18 @@ fn _issue(
     let epoch: Option<OutPoint> = serde_json::from_str(&ptr_to_string(epoch)?)?;
 
     debug!(
-        "IssueArgs {{ network: {:?}, ticker: {:?}, name: {:?}, description: {:?}, \
-        precision: {:?}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
-        epoch: {:?} }}", network, ticker, name, description, precision, allocations, inflation,
-        renomination, epoch
+        "IssueArgs {{ network: {}, ticker: {}, name: {}, description: {}, \
+        precision: {}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
+        epoch: {:?} }}",
+        network,
+        ticker,
+        name,
+        description.clone().unwrap_or_default(),
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch
     );
 
     runtime.issue(
@@ -447,7 +455,7 @@ fn _transfer(
     let transaction_file = c_transaction_file.to_str()?.to_string();
 
     debug!(
-        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {:?}, prototype_psbt: {:?}, \
+        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {}, prototype_psbt: {:?}, \
         consignment_file: {:?}, transaction_file: {:?} }}",
         inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file
     );
@@ -495,7 +503,7 @@ fn _asset_allocations(
     let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
     let contract_id = ContractId::from_bech32_str(c_contract_id.to_str()?)?;
 
-    debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
+    debug!("AssetAllocationsArgs {{ contract_id: {} }}", contract_id);
 
     let response = runtime.asset_allocations(contract_id)?;
     let json_response = serde_json::to_string(&response)?;
@@ -518,11 +526,10 @@ fn _export_asset(
 
     let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
 
-    debug!("Exporting asset: {:?}", asset_id);
+    debug!("Exporting asset: {}", asset_id);
 
     let genesis = runtime.export_asset(asset_id)?;
-    let json_response = serde_json::to_string(&genesis)?;
-    Ok(json_response)
+    Ok(genesis.to_string())
 }
 
 #[no_mangle]
@@ -542,7 +549,7 @@ fn _import_asset(
     let asset_genesis =
         Genesis::from_bech32_str(&ptr_to_string(asset_genesis)?)?;
 
-    debug!("Importing asset: {:?}", asset_genesis);
+    debug!("Importing asset: {}", asset_genesis);
 
     runtime.import_asset(asset_genesis)?;
 
@@ -612,7 +619,7 @@ fn _outpoint_assets(
     let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
     let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
 
-    debug!("OutpointAssets {{ outpoint: {:?} }}", outpoint);
+    debug!("OutpointAssets {{ outpoint: {} }}", outpoint);
 
     let response = runtime.outpoint_assets(outpoint)?;
     let json_response = serde_json::to_string(&response)?;

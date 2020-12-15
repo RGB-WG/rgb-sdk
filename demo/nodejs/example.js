@@ -51,8 +51,8 @@ async function main() {
     await rgbNode.startRgb(
         config.network, config.stash_endpoint, config.contract_endpoints, config.threaded, config.datadir)
     .then(r => {
-        console.log("RGB node runtime has started")
         runtime = r
+        console.log("RGB node runtime has started")
         return rgbNode.issue(runtime, issueData.network, issueData.ticker, issueData.name, issueData.description,
             issueData.precision, issueData.allocations, issueData.inflation, issueData.renomination,
             issueData.epoch)

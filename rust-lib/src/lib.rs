@@ -1,6 +1,6 @@
 use std::any::TypeId;
 use std::collections::hash_map::DefaultHasher;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
@@ -13,15 +13,15 @@ use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
 use rgb::lnpbp::bp::blind::OutpointReveal;
 use rgb::lnpbp::client_side_validation::Conceal;
-use rgb::lnpbp::rgb::{Consignment, ToBech32};
+use rgb::lnpbp::rgb::Consignment;
 use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
 
-use rgb::DataFormat;
 use rgb::api::reply::SyncFormat;
 use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
+use rgb::DataFormat;
 
 #[macro_use]
 extern crate amplify;
@@ -360,7 +360,7 @@ fn _issue(
     let allocations: Vec<OutpointCoins> =
         serde_json::from_str(&ptr_to_string(allocations)?)?;
 
-    let inflation: HashSet<OutpointCoins> =
+    let inflation: Vec<OutpointCoins> =
         serde_json::from_str(&ptr_to_string(inflation)?)?;
 
     let renomination: Option<OutPoint> =
@@ -446,7 +446,7 @@ fn _transfer(
     let c_transaction_file = unsafe { CStr::from_ptr(transaction_file) };
     let transaction_file = c_transaction_file.to_str()?.to_string();
 
-    info!(
+    debug!(
         "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {:?}, prototype_psbt: {:?}, \
         consignment_file: {:?}, transaction_file: {:?} }}",
         inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file
@@ -539,7 +539,8 @@ fn _import_asset(
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let asset_genesis = Genesis::from_bech32_str(&ptr_to_string(asset_genesis)?)?;
+    let asset_genesis =
+        Genesis::from_bech32_str(&ptr_to_string(asset_genesis)?)?;
 
     debug!("Importing asset: {:?}", asset_genesis);
 
@@ -572,10 +573,9 @@ fn _invoice(
         amount: amount,
     };
 
-    debug!("Created invoice: {:?}", invoice);
+    debug!("Created invoice: {}", invoice);
 
-    let json_response = serde_json::to_string(&invoice)?;
-    Ok(json_response)
+    Ok(invoice.to_string())
 }
 
 #[no_mangle]
@@ -587,28 +587,19 @@ pub extern "C" fn invoice(
     _invoice(asset_id, amount, outpoint).into()
 }
 
-fn _list_assets(
-    runtime: &COpaqueStruct,
-) -> Result<String, RequestError> {
+fn _list_assets(runtime: &COpaqueStruct) -> Result<String, RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let SyncFormat(_data_format, data) = runtime.list_assets(DataFormat::Json)?;
+    let SyncFormat(_data_format, data) =
+        runtime.list_assets(DataFormat::Json)?;
     let assets: Vec<Asset> = serde_json::from_slice(&data)?;
-
-    let assets: Vec<Asset> = assets
-        .iter()
-        .cloned()
-        .map(|mut a| { a.id = ContractId::from_bech32_str(&a.id().to_bech32_string()).unwrap(); a })
-        .collect();
 
     let json_response = serde_json::to_string(&assets)?;
     Ok(json_response)
 }
 
 #[no_mangle]
-pub extern "C" fn list_assets(
-    runtime: &COpaqueStruct,
-) -> CResultString {
+pub extern "C" fn list_assets(runtime: &COpaqueStruct) -> CResultString {
     _list_assets(runtime).into()
 }
 

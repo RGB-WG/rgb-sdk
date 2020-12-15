@@ -5,6 +5,7 @@ Bundle RGB Python bindings with setuptools
 """
 
 import sys
+import platform
 
 from setuptools.command.build_ext import build_ext
 # keep Extension import after setuptools to avoid class replacement
@@ -50,11 +51,18 @@ class BuildExt(build_ext):
 
 
 if __name__ == "__main__":
+    if platform.system() == "Darwin":
+        ext = ".dylib"
+    elif platform.system() == "Windows":
+        ext = ".dll"
+    else:
+        ext = ".so"
+
     rgb_node_module = Extension(
         '_rgb_node',
         sources=['swig.i'],
         swig_opts=['-c++', '-py3'],
-        extra_objects=[RUST_LIB + '/target/debug/librgb.so'],
+        extra_objects=[RUST_LIB + '/target/debug/librgb' + ext],
     )
     setup(
         name        = 'rgb-sdk-python',

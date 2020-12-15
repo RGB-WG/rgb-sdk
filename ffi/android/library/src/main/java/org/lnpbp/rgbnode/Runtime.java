@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.lnpbp.rgbnode.model.IssueArgs;
-import org.lnpbp.rgbnode.model.StartRgbArgs;
-import org.lnpbp.rgbnode.model.TransferArgs;
 import org.lnpbp.rgbnode_autogen.COpaqueStruct;
 import org.lnpbp.rgbnode_autogen.rgb_node;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Runtime {
@@ -18,8 +17,6 @@ public class Runtime {
 
     public Runtime(final String network, final String datadir) throws RuntimeException {
         mapper = new ObjectMapper();
-
-        final StartRgbArgs args = new StartRgbArgs(network, datadir);
         try {
             this.runtime = rgb_node.run_rgb_embedded(network, datadir);
         } catch (Exception e) {
@@ -27,18 +24,20 @@ public class Runtime {
         }
     }
 
-    public void issue(final String network, final String ticker, final String name, final String description, final String issueStructure, final List<IssueArgs.CoinAllocation> allocations, final Integer precision, final List<IssueArgs.SealSpec> pruneSeals) throws RuntimeException {
-        final IssueArgs args = new IssueArgs(network, ticker, name, description, issueStructure, allocations, precision, pruneSeals);
+    public void issue(final String network, final String ticker, final String name, final String description, final byte precision, final List<IssueArgs.OutpointCoins> allocations, final HashSet<IssueArgs.OutpointCoins> inflation, final IssueArgs.OutPoint renomination, final IssueArgs.OutPoint epoch) throws RuntimeException {
         try {
-            final String jsonArgs = mapper.writeValueAsString(args);
-            rgb_node.issue(this.runtime, jsonArgs);
+            final String allocationsStr = mapper.writeValueAsString(allocations);
+            final String inflationStr = mapper.writeValueAsString(inflation);
+            final String renominationStr = mapper.writeValueAsString(renomination);
+            final String epochStr = mapper.writeValueAsString(epoch);
+            rgb_node.issue(this.runtime, network, ticker, name, description, precision, allocationsStr, inflationStr,
+                renominationStr, epochStr);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void transfer(List<String> inputs, List<IssueArgs.CoinAllocation> allocate, String invoice, String prototype_psbt, String consignment_file, String transaction_file) throws RuntimeException {
-        final TransferArgs args = new TransferArgs(inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file);
+    public void transfer(List<String> inputs, List<IssueArgs.OutpointCoins> allocate, String invoice, String prototype_psbt, String consignment_file, String transaction_file) throws RuntimeException {
         try {
             final String inputsStr = mapper.writeValueAsString(inputs);
             final String allocateStr = mapper.writeValueAsString(allocate);

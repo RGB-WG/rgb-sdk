@@ -8,59 +8,67 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import java.util.HashMap;
 import java.util.List;
 
 import org.lnpbp.rgbnode.Runtime;
 
 public class MainApplication extends Application implements ReactApplication {
-    private Runtime runtime;
 
-  private final ReactNativeHost mReactNativeHost =
-      new ReactNativeHost(this) {
+    private Runtime runtime;
+    public final String network = "testnet";
+    public String dataDir;
+
+    private static final String TAG = MainApplication.class.getSimpleName();
+
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
-          return BuildConfig.DEBUG;
+            return BuildConfig.DEBUG;
         }
 
         @Override
         protected List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
+            @SuppressWarnings("UnnecessaryLocalVariable")
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            // Packages that cannot be autolinked yet can be added manually here, for example:
+            // packages.add(new MyReactNativePackage());
             packages.add(new DemoPackage());
-          return packages;
+            return packages;
         }
 
         @Override
         protected String getJSMainModuleName() {
-          return "index";
+            return "index";
         }
-      };
+    };
 
     public Runtime getRuntime() {
         return runtime;
     }
 
     @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
 
-      Log.i("RGB_NODE", "loading library");
-      System.loadLibrary("rgb_node");
+        final String libName = "rgb_node";
+        Log.i(TAG, String.format("Loading '%s' library", libName));
+        try {
+            System.loadLibrary(libName);
+        } catch (UnsatisfiedLinkError e) {
+            Log.e(TAG, String.format("Error loading '%s' library: %s", libName, e.toString()));
+        }
+        this.dataDir = getFilesDir().toString();
 
-      final String datadir = getFilesDir().toString();
-      final String network = "testnet";
-
-      final HashMap contractEndpoints = new HashMap();
-      contractEndpoints.put("Fungible", String.format("inproc://fungibled", datadir, network));
-      this.runtime = new Runtime(network, String.format("inproc://stashd", datadir, network), contractEndpoints, true, datadir);
-  }
+        try {
+            this.runtime = new Runtime(this.network, this.dataDir);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
 }

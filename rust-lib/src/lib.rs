@@ -4,23 +4,24 @@ use std::collections::HashMap;
 use std::env;
 use std::ffi::{CStr, CString};
 use std::hash::{Hash, Hasher};
-use std::os::raw::{c_char, c_void};
+use std::os::raw::{c_char, c_double, c_uchar, c_void};
 use std::str::FromStr;
 
 use log::LevelFilter;
 
-use serde::Deserialize;
-
 use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
+use rgb::lnpbp::bp::blind::OutpointReveal;
+use rgb::lnpbp::client_side_validation::Conceal;
 use rgb::lnpbp::rgb::Consignment;
-use rgb::lnpbp::rgb::{ContractId, FromBech32};
+use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
 
-use rgb::fungible::{Invoice, IssueStructure, Outcoins};
+use rgb::api::reply::SyncFormat;
+use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
-use rgb::util::SealSpec;
+use rgb::DataFormat;
 
 #[macro_use]
 extern crate amplify;
@@ -334,39 +335,64 @@ pub extern "C" fn run_rgb_embedded(
     _run_rgb_embedded(network, datadir).into()
 }
 
-#[derive(Debug, Deserialize)]
-struct IssueArgs {
-    #[serde(with = "serde_with::rust::display_fromstr")]
-    network: bp::Chain,
-    ticker: String,
-    name: String,
-    #[serde(default)]
-    description: Option<String>,
-    issue_structure: IssueStructure,
-    #[serde(default)]
-    allocations: Vec<Outcoins>,
-    precision: u8,
-    #[serde(default)]
-    prune_seals: Vec<SealSpec>,
-}
-
 fn _issue(
     runtime: &COpaqueStruct,
-    json: *const c_char,
+    network: *const c_char,
+    ticker: *const c_char,
+    name: *const c_char,
+    description: *const c_char,
+    precision: c_uchar,
+    allocations: *const c_char,
+    inflation: *const c_char,
+    renomination: *const c_char,
+    epoch: *const c_char,
 ) -> Result<(), RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
-    let data: IssueArgs = serde_json::from_str(&ptr_to_string(json)?)?;
-    info!("{:?}", data);
+
+    let network = bp::Chain::from_str(&ptr_to_string(network)?)?;
+
+    let ticker = ptr_to_string(ticker)?;
+
+    let name = ptr_to_string(name)?;
+
+    let description: Option<String> = Some(ptr_to_string(description)?);
+
+    let allocations: Vec<OutpointCoins> =
+        serde_json::from_str(&ptr_to_string(allocations)?)?;
+
+    let inflation: Vec<OutpointCoins> =
+        serde_json::from_str(&ptr_to_string(inflation)?)?;
+
+    let renomination: Option<OutPoint> =
+        serde_json::from_str(&ptr_to_string(renomination)?)?;
+
+    let epoch: Option<OutPoint> = serde_json::from_str(&ptr_to_string(epoch)?)?;
+
+    debug!(
+        "IssueArgs {{ network: {}, ticker: {}, name: {}, description: {}, \
+        precision: {}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
+        epoch: {:?} }}",
+        network,
+        ticker,
+        name,
+        description.clone().unwrap_or_default(),
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch
+    );
 
     runtime.issue(
-        data.network,
-        data.ticker,
-        data.name,
-        data.description,
-        data.issue_structure,
-        data.allocations,
-        data.precision,
-        data.prune_seals,
+        network,
+        ticker,
+        name,
+        description,
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch,
     )?;
 
     Ok(())
@@ -375,9 +401,29 @@ fn _issue(
 #[no_mangle]
 pub extern "C" fn issue(
     runtime: &COpaqueStruct,
-    json: *const c_char,
+    network: *const c_char,
+    ticker: *const c_char,
+    name: *const c_char,
+    description: *const c_char,
+    precision: c_uchar,
+    allocations: *const c_char,
+    inflation: *const c_char,
+    renomination: *const c_char,
+    epoch: *const c_char,
 ) -> CResult {
-    _issue(runtime, json).into()
+    _issue(
+        runtime,
+        network,
+        ticker,
+        name,
+        description,
+        precision,
+        allocations,
+        inflation,
+        renomination,
+        epoch,
+    )
+    .into()
 }
 
 fn _transfer(
@@ -393,7 +439,7 @@ fn _transfer(
 
     let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
 
-    let allocate: Vec<Outcoins> =
+    let allocate: Vec<SealCoins> =
         serde_json::from_str(&ptr_to_string(allocate)?)?;
 
     let c_invoice = unsafe { CStr::from_ptr(invoice) };
@@ -408,8 +454,8 @@ fn _transfer(
     let c_transaction_file = unsafe { CStr::from_ptr(transaction_file) };
     let transaction_file = c_transaction_file.to_str()?.to_string();
 
-    info!(
-        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {:?}, prototype_psbt: {:?}, \
+    debug!(
+        "TransferArgs {{ inputs: {:?}, allocate: {:?}, invoice: {}, prototype_psbt: {:?}, \
         consignment_file: {:?}, transaction_file: {:?} }}",
         inputs, allocate, invoice, prototype_psbt, consignment_file, transaction_file
     );
@@ -457,7 +503,7 @@ fn _asset_allocations(
     let c_contract_id = unsafe { CStr::from_ptr(contract_id) };
     let contract_id = ContractId::from_bech32_str(c_contract_id.to_str()?)?;
 
-    debug!("AssetAllocationsArgs {{ contract_id: {:?} }}", contract_id);
+    debug!("AssetAllocationsArgs {{ contract_id: {} }}", contract_id);
 
     let response = runtime.asset_allocations(contract_id)?;
     let json_response = serde_json::to_string(&response)?;
@@ -472,6 +518,98 @@ pub extern "C" fn asset_allocations(
     _asset_allocations(runtime, contract_id).into()
 }
 
+fn _export_asset(
+    runtime: &COpaqueStruct,
+    asset_id: *const c_char,
+) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+
+    debug!("Exporting asset: {}", asset_id);
+
+    let genesis = runtime.export_asset(asset_id)?;
+    Ok(genesis.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn export_asset(
+    runtime: &COpaqueStruct,
+    asset_id: *const c_char,
+) -> CResultString {
+    _export_asset(runtime, asset_id).into()
+}
+
+fn _import_asset(
+    runtime: &COpaqueStruct,
+    asset_genesis: *const c_char,
+) -> Result<(), RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let asset_genesis =
+        Genesis::from_bech32_str(&ptr_to_string(asset_genesis)?)?;
+
+    debug!("Importing asset: {}", asset_genesis);
+
+    runtime.import_asset(asset_genesis)?;
+
+    Ok(())
+}
+
+#[no_mangle]
+pub extern "C" fn import_asset(
+    runtime: &COpaqueStruct,
+    asset_genesis: *const c_char,
+) -> CResult {
+    _import_asset(runtime, asset_genesis).into()
+}
+
+fn _invoice(
+    asset_id: *const c_char,
+    amount: c_double,
+    outpoint: *const c_char,
+) -> Result<String, RequestError> {
+    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+
+    let outpoint = OutPoint::from_str(&ptr_to_string(outpoint)?)?;
+
+    let outpoint_reveal = OutpointReveal::from(outpoint);
+    let invoice = Invoice {
+        contract_id: asset_id,
+        outpoint: Outpoint::BlindedUtxo(outpoint_reveal.conceal()),
+        amount: amount,
+    };
+
+    debug!("Created invoice: {}", invoice);
+
+    Ok(invoice.to_string())
+}
+
+#[no_mangle]
+pub extern "C" fn invoice(
+    asset_id: *const c_char,
+    amount: c_double,
+    outpoint: *const c_char,
+) -> CResultString {
+    _invoice(asset_id, amount, outpoint).into()
+}
+
+fn _list_assets(runtime: &COpaqueStruct) -> Result<String, RequestError> {
+    let runtime = Runtime::from_opaque(runtime)?;
+
+    let SyncFormat(_data_format, data) =
+        runtime.list_assets(DataFormat::Json)?;
+    let assets: Vec<Asset> = serde_json::from_slice(&data)?;
+
+    let json_response = serde_json::to_string(&assets)?;
+    Ok(json_response)
+}
+
+#[no_mangle]
+pub extern "C" fn list_assets(runtime: &COpaqueStruct) -> CResultString {
+    _list_assets(runtime).into()
+}
+
 fn _outpoint_assets(
     runtime: &COpaqueStruct,
     outpoint: *const c_char,
@@ -481,7 +619,7 @@ fn _outpoint_assets(
     let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
     let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
 
-    debug!("OutpointAssets {{ outpoint: {:?} }}", outpoint);
+    debug!("OutpointAssets {{ outpoint: {} }}", outpoint);
 
     let response = runtime.outpoint_assets(outpoint)?;
     let json_response = serde_json::to_string(&response)?;
@@ -507,7 +645,7 @@ fn _accept(
     debug!("Reading consignment from {}", filename);
     let consignment = Consignment::read_file(filename.into())?;
 
-    let reveal_outpoints: Vec<bp::blind::OutpointReveal> =
+    let reveal_outpoints: Vec<OutpointReveal> =
         serde_json::from_str(&ptr_to_string(reveal_outpoints)?)?;
 
     trace!(

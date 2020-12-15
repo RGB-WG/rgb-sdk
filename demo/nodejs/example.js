@@ -1,16 +1,6 @@
 const fs = require('fs')
 const rgb = require('../../ffi/nodejs/rgb_node')
 
-const config = {
-    network: "testnet",
-    stash_endpoint: "lnpz:/tmp/rgb-node/testnet/stashd.rpc",
-    contract_endpoints: {
-        Fungible: "lnpz:/tmp/rgb-node/testnet/fungibled.rpc"
-    },
-    threaded: true,
-    datadir: "/tmp/rgb-node"
-}
-
 const issueData = {
     network: "testnet",
     ticker: "USDT",
@@ -48,8 +38,7 @@ const assetGenesis = 'genesis1qyfe883hey6jrgj2xvk5g3dfmfqfzm7a4wez4pd2krf7ltsxff
 var rgbNode = null
 
 function main() {
-    rgbNode = new rgb.Node(
-        config.network, config.stash_endpoint, config.contract_endpoints, config.threaded, config.datadir)
+    rgbNode = new rgb.Node("testnet", "../../data")
     console.log("RGB node runtime has started")
 
     rgbNode.issue(issueData.network, issueData.ticker, issueData.name, issueData.description,

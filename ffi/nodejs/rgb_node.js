@@ -1,8 +1,8 @@
 const lib = require('./build/Release/rgb_node')
 
 exports.Node = class Node {
-    constructor(network, stashEndpoint, contractEndpoints, threaded, dataDir) {
-        this.runtime = lib.start_rgb(network, stashEndpoint, JSON.stringify(contractEndpoints), threaded, dataDir)
+    constructor(network, dataDir) {
+        this.runtime = lib.run_rgb_embedded(network, dataDir)
     }
 
     issue(network, ticker, name, description, precision, allocations, inflation, renomination, epoch) {

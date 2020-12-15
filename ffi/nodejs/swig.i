@@ -3,30 +3,26 @@
 #include "../../rust-lib/rgb_node.h"
 %}
 
-%typemap(out) CResult (v8::Local<v8::Promise::Resolver> resolver) %{
-    resolver = v8::Promise::Resolver::New(args.GetIsolate());
+%typemap(out) CResult %{
     switch ($1.result) {
         case CResultValue::Ok:
-            resolver->Resolve(SWIG_NewPointerObj((new COpaqueStruct(static_cast< const COpaqueStruct& >($1.inner))), SWIGTYPE_p_COpaqueStruct, SWIG_POINTER_OWN |  0 ));
+            $result = SWIG_NewPointerObj((new COpaqueStruct(static_cast< const COpaqueStruct& >($1.inner))), SWIGTYPE_p_COpaqueStruct, SWIG_POINTER_OWN |  0 );
             break;
         case CResultValue::Err:
-            resolver->Reject(v8::String::NewFromUtf8(args.GetIsolate(), (const char*) $1.inner.ptr));
+            SWIG_V8_Raise((const char*) $1.inner.ptr);
             break;
     }
-    $result = resolver->GetPromise();
 %}
 
-%typemap(out) CResultString (v8::Local<v8::Promise::Resolver> resolver) %{
-    resolver = v8::Promise::Resolver::New(args.GetIsolate());
+%typemap(out) CResultString %{
     switch ($1.result) {
         case CResultValue::Ok:
-            resolver->Resolve(v8::String::NewFromUtf8(args.GetIsolate(), (const char*) $1.inner));
+            $result = v8::String::NewFromUtf8(args.GetIsolate(), (const char*) $1.inner);
             break;
         case CResultValue::Err:
-            resolver->Reject(v8::String::NewFromUtf8(args.GetIsolate(), (const char*) $1.inner));
+            SWIG_V8_Raise((const char*) $1.inner);
             break;
     }
-    $result = resolver->GetPromise();
 %}
 
 %inline %{

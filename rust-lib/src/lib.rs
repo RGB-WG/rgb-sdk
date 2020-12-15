@@ -19,6 +19,7 @@ use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
 use rgb::api::reply::SyncFormat;
 use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
+use rgb::lnpbp::strict_encoding::strict_decode;
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
 use rgb::DataFormat;
@@ -597,9 +598,8 @@ pub extern "C" fn invoice(
 fn _list_assets(runtime: &COpaqueStruct) -> Result<String, RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let SyncFormat(_data_format, data) =
-        runtime.list_assets(DataFormat::Json)?;
-    let assets: Vec<Asset> = serde_json::from_slice(&data)?;
+    let SyncFormat(_, data) = runtime.list_assets(DataFormat::StrictEncode)?;
+    let assets: Vec<Asset> = strict_decode(&data)?;
 
     let json_response = serde_json::to_string(&assets)?;
     Ok(json_response)
@@ -619,7 +619,7 @@ fn _outpoint_assets(
     let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
     let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
 
-    debug!("OutpointAssets {{ outpoint: {} }}", outpoint);
+    debug!("Listing assets for {}", outpoint);
 
     let response = runtime.outpoint_assets(outpoint)?;
     let json_response = serde_json::to_string(&response)?;

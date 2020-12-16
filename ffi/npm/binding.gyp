@@ -4,13 +4,12 @@
       "target_name": "rgb",
       "sources": [ "swig_wrap.cxx" ],
       "libraries": [
-           '-L<(module_root_dir)/../../librgb/target/release/',
-           '-lrgb',
+           '<(module_root_dir)/../../librgb/target/release/librgb.a',
        ],
-      'include_dirs': [
+      "include_dirs": [
            '../../librgb',
        ],
-       "ldflags": [
+      "ldflags": [
            '-Wl,-rpath,../../librgb/target/release/'
        ],
       "cflags!": ["-std=c++11"],

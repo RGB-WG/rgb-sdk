@@ -54,7 +54,7 @@ if __name__ == "__main__":
     if platform.system() == "Darwin":
         ext = ".a"
     elif platform.system() == "Windows":
-        ext = ".obj"
+        ext = ".lib"
     else:
         ext = ".a"
 

@@ -52,7 +52,7 @@ class BuildExt(build_ext):
 
 if __name__ == "__main__":
     if platform.system() == "Darwin":
-        ext = ".a"
+        ext = ".dylib" # macOS requires dynamic binding; otherwise it does not find system libs
     elif platform.system() == "Windows":
         ext = ".lib"
     else:

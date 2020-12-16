@@ -4,7 +4,8 @@
       "target_name": "rgb",
       "sources": [ "swig_wrap.cxx" ],
       "libraries": [
-           '<(module_root_dir)/../../librgb/target/release/librgb.a',
+           '-L<(module_root_dir)/../../librgb/target/release',
+           '-lrgb',
        ],
       "include_dirs": [
            '../../librgb',

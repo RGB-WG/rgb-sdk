@@ -356,7 +356,16 @@ fn _issue(
 
     let name = ptr_to_string(name)?;
 
-    let description: Option<String> = Some(ptr_to_string(description)?);
+    let description = if description.is_null() {
+        None
+    } else {
+        let description = ptr_to_string(description)?;
+        if description.is_empty() {
+            None
+        } else {
+            Some(description)
+        }
+    };
 
     let allocations: Vec<OutpointCoins> =
         serde_json::from_str(&ptr_to_string(allocations)?)?;

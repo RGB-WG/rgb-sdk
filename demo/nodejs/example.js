@@ -1,23 +1,6 @@
 const fs = require('fs')
 const rgb = require('../../ffi/nodejs/rgb_node')
 
-const issueData = {
-    network: "testnet",
-    ticker: "USDT",
-    name: "USD Tether",
-    description: "USD Tether description",
-    precision: 0,
-    allocations: [
-        {
-            coins: 6660000,
-            outpoint: '5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0',
-        }
-    ],
-    inflation: [],
-    renomination: null,
-    epoch: null,
-}
-
 const consignmentPath = '/tmp/rgb-node/output/consignment.rgb'
 
 const inputOutpoint = '0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0'
@@ -41,9 +24,15 @@ function main() {
     rgbNode = new rgb.Node("testnet", "../../data")
     console.log("RGB node runtime has started")
 
-    rgbNode.issue(issueData.network, issueData.ticker, issueData.name, issueData.description,
-        issueData.precision, issueData.allocations, issueData.inflation, issueData.renomination,
-        issueData.epoch)
+    rgbNode.issue(
+        "DEMO", "Demo token", null, 8,
+        [
+            {
+                coins: 1000000,
+                outpoint: '5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0',
+            }
+        ]
+    )
     /*
     rgbNode.transfer(JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
            transferData.invoice, transferData.prototypePsbt, transferData.consignmentFile,

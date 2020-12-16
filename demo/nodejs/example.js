@@ -33,14 +33,18 @@ function main() {
             }
         ]
     )
+    let assets = rgbNode.listAssets()
+    console.log("Known assets:")
+    console.log(assets)
+
     /*
     rgbNode.transfer(JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
            transferData.invoice, transferData.prototypePsbt, transferData.consignmentFile,
            transferData.transactionFile)
     rgbNode.assetAllocations('rgb1w82xuaxz6lp9symrp3f4r47rylkkxsh506qzkt2n2kjfhrhrt03qrrcm0g')
     */
-    let assets = rgbNode.outpointAssets("5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0")
-    console.log("Asset list for '" + inputOutpoint + "': " + assets)
+    let ooutpointAssets = rgbNode.outpointAssets("5aa2d0a8098371ee12b4b59f43ffe6a2de637341258af65936a5baa01da49e9b:0")
+    console.log("Asset list for '" + inputOutpoint + "': " + ooutpointAssets)
 
     try {
         rgbNode.validate(consignmentPath)

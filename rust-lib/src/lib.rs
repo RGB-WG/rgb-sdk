@@ -379,13 +379,13 @@ fn _issue(
     let epoch: Option<OutPoint> = serde_json::from_str(&ptr_to_string(epoch)?)?;
 
     debug!(
-        "IssueArgs {{ network: {}, ticker: {}, name: {}, description: {}, \
+        "Issue: {{ network: {}, ticker: {}, name: {}, description: {:?}, \
         precision: {}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
         epoch: {:?} }}",
         network,
         ticker,
         name,
-        description.clone().unwrap_or_default(),
+        description,
         precision,
         allocations,
         inflation,

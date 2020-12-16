@@ -100,7 +100,7 @@ jobs:
       - name: Build bindings
         run: |
           sudo apt-get install -y node-gyp
-          cd $GITHUB_WORKSPACE/ffi/nodejs
+          cd $GITHUB_WORKSPACE/ffi/npm
           npm install
   python:
     runs-on: ${{ matrix.os }}

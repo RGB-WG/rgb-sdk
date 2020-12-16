@@ -21,10 +21,10 @@ RUN wget https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0
     ./configure && make -j12 && \
     make install
 
-COPY ffi/python /rgb-sdk/ffi/python
+COPY bindings/python /rgb-sdk/bindings/python
 COPY rust-lib /rgb-sdk/rust-lib
 
-WORKDIR /rgb-sdk/ffi/python
+WORKDIR /rgb-sdk/bindings/python
 
 RUN python3 -m pip install --upgrade pip setuptools wheel \
     && python3 setup.py build_ext

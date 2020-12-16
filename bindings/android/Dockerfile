@@ -39,9 +39,9 @@ RUN rustup target add \
         armv7-linux-androideabi \
         i686-linux-android
 
-COPY ffi/android /rgblib/ffi/android
+COPY bindings/android /rgblib/bindings/android
 COPY rust-lib /rgblib/rust-lib
 
-WORKDIR /rgblib/ffi/android
+WORKDIR /rgblib/bindings/android
 
 RUN ./gradlew build

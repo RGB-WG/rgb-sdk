@@ -1,6 +1,6 @@
 FROM rust:1.47.0-slim-buster as builder
 
-COPY ffi/nodejs /rgb-sdk/ffi/nodejs
+COPY bindings/nodejs /rgb-sdk/bindings/nodejs
 COPY rust-lib /rgb-sdk/rust-lib
 
 RUN apt-get update -y \
@@ -29,7 +29,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | 
     nvm install v10 --lts && \
     nvm alias default v10
 
-WORKDIR /librgb/ffi/nodejs
+WORKDIR /librgb/bindings/nodejs
 
 RUN . $HOME/.nvm/nvm.sh && npm install --unsafe-perm
 
@@ -45,9 +45,9 @@ RUN apt-get update -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /librgb/target/release/ /librgb/ffi/nodejs/
+RUN mkdir -p /librgb/target/release/ /librgb/bindings/nodejs/
 
-COPY --from=builder /rgb-sdk/ffi/nodejs/build/Release/rgb.node /librgb/
+COPY --from=builder /rgb-sdk/bindings/nodejs/build/Release/rgb.node /librgb/
 COPY --from=builder /rgb-sdk/librgb/target/release/librgb.so /librgb/target/release/
 
 WORKDIR /rgb-sdk/

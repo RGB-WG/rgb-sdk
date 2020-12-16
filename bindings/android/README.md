@@ -6,7 +6,7 @@ In order to build Android bindings, from the project root follow the
 [Local](#local) or [In docker](#in-docker) instructions.
 
 Both instructions will generate the artifacts (`library-debug.aar` and
-`library-release.aar`) in `ffi/android/library/build/outputs/aar/`.
+`library-release.aar`) in `bindings/android/library/build/outputs/aar/`.
 
 ### Local
 
@@ -17,18 +17,18 @@ Both instructions will generate the artifacts (`library-debug.aar` and
 ```
 rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-androideabi i686-linux-android
 ```
-* Go to `ffi/android` and then:
+* Go to `bindings/android` and then:
     * Update the `PATH` in `build_rust.sh` script if you're not building from x86_64
     * Run `./gradlew build` (if something fails, manually run the `build_rust.sh` script for a better error report)
 
 ### In docker
 
 ```bash
-docker build -f ffi/android/Dockerfile -t rgb-sdk-android .
-mkdir -p ffi/android/library/build/outputs/aar
+docker build -f bindings/android/Dockerfile -t rgb-sdk-android .
+mkdir -p bindings/android/library/build/outputs/aar
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
     rgb-sdk-android \
-    -c 'cp /rgb-sdk/ffi/android/library/build/outputs/aar/*.aar /opt/mount/ffi/android/library/build/outputs/aar/'
+    -c 'cp /rgb-sdk/bindings/android/library/build/outputs/aar/*.aar /opt/mount/bindings/android/library/build/outputs/aar/'
 ```
 
 ## Usage

@@ -13,19 +13,19 @@ and `rgb.node` in `ffi/nodejs/build/Release/`.
 * Install dependencies: Node.js v10, node-gyp, swig 4.0
 * From the project root run:
 ```bash
-cd ffi/nodejs
+cd ffi/npm
 npm install
 ```
 
 ### In docker
 
 ```bash
-docker build -f ffi/nodejs/Dockerfile -t rgb-sdk-nodejs .
+docker build -f ffi/npmnpm/Dockerfile -t rgb-sdk-npm .
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
-    rgb-sdk-nodejs \
-    -c 'mkdir -p /opt/mount/librgb/target/release /opt/mount/ffi/nodejs/build/Release \
+    rgb-sdk-npm \
+    -c 'mkdir -p /opt/mount/librgb/target/release /opt/mount/ffi/npm/build/Release \
     && cp /rgb-sdk/target/release/librgb.so /opt/mount/librgb/target/release/librgb.so \
-    && cp /rgb-sdk/rgb.node /opt/mount/ffi/nodejs/build/Release/rgb.node'
+    && cp /rgb-sdk/rgb.node /opt/mount/ffi/npm/build/Release/rgb.node'
 ```
 
 ## Usage

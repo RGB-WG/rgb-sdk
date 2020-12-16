@@ -8,7 +8,7 @@ from the project root, run:
 ```bash
 # install dependencies
 brew install cmake openssl zmq
-rustup target add aarch64-apple-ios x86_64-apple-ios
+rustup target add aarch64-apple-swift x86_64-apple-swift
 cargo install cargo-lipo
 # build bindings
 cargo lipo --manifest-path librgb/Cargo.toml --release

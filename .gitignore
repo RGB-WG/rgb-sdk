@@ -24,7 +24,7 @@
 /ffi/android/library/src/main/java/org/lnpbp/rgbnode_autogen
 /ffi/android/library/src/main/jniLibs
 
-/ffi/nodejs/build
+/ffi/npm/build
 
 /ffi/python/build
 /ffi/python/rgb_node.py

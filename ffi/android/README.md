@@ -27,7 +27,7 @@ rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-android
 docker build -f ffi/android/Dockerfile -t rgb-sdk-android .
 mkdir -p ffi/android/library/build/outputs/aar
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
-    rgb-sdk-nodejs \
+    rgb-sdk-android \
     -c 'cp /rgb-sdk/ffi/android/library/build/outputs/aar/*.aar /opt/mount/ffi/android/library/build/outputs/aar/'
 ```
 

@@ -1,12 +1,12 @@
 # RGB iOS demo application
 
 In order to run this demo, build the rgb bindings by following
-[these instructions](/ffi/ios) and then, from the project root, run:
+[these instructions](/ffi/swift) and then, from the project root, run:
 
 ```bash
-mkdir demo/ios/Libraries
-cp librgb/target/universal/release/librgb.a demo/ios/Libraries/
-cp <path_to_libzmq>/builds/ios/lib/libzmq.a demo/ios/Libraries/
+mkdir demo/swift/Libraries
+cp librgb/target/universal/release/librgb.a demo/swift/Libraries/
+cp <path_to_libzmq>/builds/swift/lib/libzmq.a demo/swift/Libraries/
 ```
 
 Open the iOS project from Xcode

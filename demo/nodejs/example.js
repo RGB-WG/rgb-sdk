@@ -1,4 +1,4 @@
-const rgb = require('../../ffi/nodejs/rgb')
+const rgb = require('../../ffi/npm/rgb')
 
 const DATA_DIR = "../../data"
 

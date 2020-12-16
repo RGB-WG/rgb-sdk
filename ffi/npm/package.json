@@ -2,7 +2,7 @@
   "name": "rgb",
   "version": "0.2.0",
   "description": "",
-  "main": "index.js",
+  "main": "rgb.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "preinstall": "cargo build --release --manifest-path ../../librgb/Cargo.toml && swig -javascript -node -c++ swig.i",

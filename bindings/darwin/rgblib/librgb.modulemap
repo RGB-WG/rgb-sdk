@@ -1,4 +1,4 @@
-framework module rgb {
+framework module rgblib {
     umbrella header "librgb.h"
     
     export *

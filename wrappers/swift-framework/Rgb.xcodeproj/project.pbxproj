@@ -7,115 +7,155 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3063CCBB258AAE5D00368A28 /* rgb.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CCB9258AAE5D00368A28 /* rgb.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3063CCC5258AAED500368A28 /* librgb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCC4258AAEC600368A28 /* librgb.a */; };
-		3063CCCC258AAFE100368A28 /* librgb.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CCCB258AAFE100368A28 /* librgb.h */; };
+		3063CCDF258AB46700368A28 /* Rgb.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CCDD258AB46700368A28 /* Rgb.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; };
+		3063CCFE258AB6EA00368A28 /* rgblib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3063CD01258AB6FC00368A28 /* RgbClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3063CD00258AB6FC00368A28 /* RgbClient.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3063CCFA258AB6E200368A28 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3063CCB6258AAE5D00368A28;
+			remoteInfo = rgblib;
+		};
+		3063CD32258ABA4A00368A28 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3063CCB5258AAE5D00368A28;
+			remoteInfo = rgblib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3063CCFF258AB6EA00368A28 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3063CCFE258AB6EA00368A28 /* rgblib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		3063CCB6258AAE5D00368A28 /* rgb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = rgb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3063CCB9258AAE5D00368A28 /* rgb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rgb.h; sourceTree = "<group>"; };
-		3063CCBA258AAE5D00368A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3063CCC4258AAEC600368A28 /* librgb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librgb.a; path = ../../librgb/target/universal/release/librgb.a; sourceTree = "<group>"; };
-		3063CCCA258AAF9C00368A28 /* librgb.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = librgb.modulemap; sourceTree = "<group>"; };
-		3063CCCB258AAFE100368A28 /* librgb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = librgb.h; path = ../../../librgb/librgb.h; sourceTree = "<group>"; };
+		3063CCDA258AB46700368A28 /* Rgb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rgb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3063CCDD258AB46700368A28 /* Rgb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rgb.h; sourceTree = "<group>"; };
+		3063CCDE258AB46700368A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = rgblib.xcodeproj; path = ../../bindings/darwin/rgblib.xcodeproj; sourceTree = "<group>"; };
+		3063CD00258AB6FC00368A28 /* RgbClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RgbClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3063CCB3258AAE5D00368A28 /* Frameworks */ = {
+		3063CCD7258AB46700368A28 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3063CCC5258AAED500368A28 /* librgb.a in Frameworks */,
+				3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3063CCAC258AAE5D00368A28 = {
+		3063CCD0258AB46700368A28 = {
 			isa = PBXGroup;
 			children = (
-				3063CCB8258AAE5D00368A28 /* rgb */,
-				3063CCB7258AAE5D00368A28 /* Products */,
-				3063CCC3258AAEC500368A28 /* Frameworks */,
+				3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */,
+				3063CCDC258AB46700368A28 /* Rgb */,
+				3063CCDB258AB46700368A28 /* Products */,
+				3063CCED258AB68D00368A28 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		3063CCB7258AAE5D00368A28 /* Products */ = {
+		3063CCDB258AB46700368A28 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3063CCB6258AAE5D00368A28 /* rgb.framework */,
+				3063CCDA258AB46700368A28 /* Rgb.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3063CCB8258AAE5D00368A28 /* rgb */ = {
+		3063CCDC258AB46700368A28 /* Rgb */ = {
 			isa = PBXGroup;
 			children = (
-				3063CCCB258AAFE100368A28 /* librgb.h */,
-				3063CCB9258AAE5D00368A28 /* rgb.h */,
-				3063CCBA258AAE5D00368A28 /* Info.plist */,
-				3063CCCA258AAF9C00368A28 /* librgb.modulemap */,
+				3063CCDD258AB46700368A28 /* Rgb.h */,
+				3063CCDE258AB46700368A28 /* Info.plist */,
+				3063CD00258AB6FC00368A28 /* RgbClient.swift */,
 			);
-			path = rgb;
+			path = Rgb;
 			sourceTree = "<group>";
 		};
-		3063CCC3258AAEC500368A28 /* Frameworks */ = {
+		3063CCED258AB68D00368A28 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3063CCC4258AAEC600368A28 /* librgb.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3063CCF7258AB6E200368A28 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3063CCFB258AB6E200368A28 /* rgblib.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		3063CCB1258AAE5D00368A28 /* Headers */ = {
+		3063CCD5258AB46700368A28 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3063CCCC258AAFE100368A28 /* librgb.h in Headers */,
-				3063CCBB258AAE5D00368A28 /* rgb.h in Headers */,
+				3063CCDF258AB46700368A28 /* Rgb.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3063CCB5258AAE5D00368A28 /* rgb */ = {
+		3063CCD9258AB46700368A28 /* Rgb */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3063CCBE258AAE5D00368A28 /* Build configuration list for PBXNativeTarget "rgb" */;
+			buildConfigurationList = 3063CCE2258AB46700368A28 /* Build configuration list for PBXNativeTarget "Rgb" */;
 			buildPhases = (
-				3063CCB1258AAE5D00368A28 /* Headers */,
-				3063CCB2258AAE5D00368A28 /* Sources */,
-				3063CCB3258AAE5D00368A28 /* Frameworks */,
-				3063CCB4258AAE5D00368A28 /* Resources */,
+				3063CCD5258AB46700368A28 /* Headers */,
+				3063CCD6258AB46700368A28 /* Sources */,
+				3063CCD7258AB46700368A28 /* Frameworks */,
+				3063CCD8258AB46700368A28 /* Resources */,
+				3063CCFF258AB6EA00368A28 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3063CD33258ABA4A00368A28 /* PBXTargetDependency */,
 			);
-			name = rgb;
-			productName = rgb;
-			productReference = 3063CCB6258AAE5D00368A28 /* rgb.framework */;
+			name = Rgb;
+			productName = Rgb;
+			productReference = 3063CCDA258AB46700368A28 /* Rgb.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		3063CCAD258AAE5D00368A28 /* Project object */ = {
+		3063CCD1258AB46700368A28 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
-					3063CCB5258AAE5D00368A28 = {
+					3063CCD9258AB46700368A28 = {
 						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
 					};
 				};
 			};
-			buildConfigurationList = 3063CCB0258AAE5D00368A28 /* Build configuration list for PBXProject "rgb" */;
+			buildConfigurationList = 3063CCD4258AB46700368A28 /* Build configuration list for PBXProject "Rgb" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -123,18 +163,34 @@
 				en,
 				Base,
 			);
-			mainGroup = 3063CCAC258AAE5D00368A28;
-			productRefGroup = 3063CCB7258AAE5D00368A28 /* Products */;
+			mainGroup = 3063CCD0258AB46700368A28;
+			productRefGroup = 3063CCDB258AB46700368A28 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3063CCF7258AB6E200368A28 /* Products */;
+					ProjectRef = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
-				3063CCB5258AAE5D00368A28 /* rgb */,
+				3063CCD9258AB46700368A28 /* Rgb */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		3063CCFB258AB6E200368A28 /* rgblib.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = rgblib.framework;
+			remoteRef = 3063CCFA258AB6E200368A28 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
-		3063CCB4258AAE5D00368A28 /* Resources */ = {
+		3063CCD8258AB46700368A28 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -144,17 +200,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3063CCB2258AAE5D00368A28 /* Sources */ = {
+		3063CCD6258AB46700368A28 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3063CD01258AB6FC00368A28 /* RgbClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3063CD33258ABA4A00368A28 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = rgblib;
+			targetProxy = 3063CD32258ABA4A00368A28 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		3063CCBC258AAE5D00368A28 /* Debug */ = {
+		3063CCE0258AB46700368A28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -207,7 +272,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
-				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -219,7 +283,7 @@
 			};
 			name = Debug;
 		};
-		3063CCBD258AAE5D00368A28 /* Release */ = {
+		3063CCE1258AB46700368A28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -266,7 +330,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
-				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -278,49 +341,50 @@
 			};
 			name = Release;
 		};
-		3063CCBF258AAE5D00368A28 /* Debug */ = {
+		3063CCE3258AB46700368A28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = BLS4N8A6L6;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = rgb/Info.plist;
+				INFOPLIST_FILE = Rgb/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.rgb";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		3063CCC0258AAE5D00368A28 /* Release */ = {
+		3063CCE4258AB46700368A28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = BLS4N8A6L6;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = rgb/Info.plist;
+				INFOPLIST_FILE = Rgb/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.rgb";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -331,25 +395,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3063CCB0258AAE5D00368A28 /* Build configuration list for PBXProject "rgb" */ = {
+		3063CCD4258AB46700368A28 /* Build configuration list for PBXProject "Rgb" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3063CCBC258AAE5D00368A28 /* Debug */,
-				3063CCBD258AAE5D00368A28 /* Release */,
+				3063CCE0258AB46700368A28 /* Debug */,
+				3063CCE1258AB46700368A28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3063CCBE258AAE5D00368A28 /* Build configuration list for PBXNativeTarget "rgb" */ = {
+		3063CCE2258AB46700368A28 /* Build configuration list for PBXNativeTarget "Rgb" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3063CCBF258AAE5D00368A28 /* Debug */,
-				3063CCC0258AAE5D00368A28 /* Release */,
+				3063CCE3258AB46700368A28 /* Debug */,
+				3063CCE4258AB46700368A28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 3063CCAD258AAE5D00368A28 /* Project object */;
+	rootObject = 3063CCD1258AB46700368A28 /* Project object */;
 }

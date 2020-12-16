@@ -1,17 +1,17 @@
 {
   "targets": [
     {
-      "target_name": "rgb_node",
+      "target_name": "rgb",
       "sources": [ "swig_wrap.cxx" ],
       "libraries": [
-           '-L<(module_root_dir)/../../rust-lib/target/debug/',
+           '-L<(module_root_dir)/../../librgb/target/release/',
            '-lrgb',
        ],
       'include_dirs': [
-           '../../rust-lib',
+           '../../librgb',
        ],
        "ldflags": [
-           '-Wl,-rpath,../../rust-lib/target/debug/'
+           '-Wl,-rpath,../../librgb/target/release/'
        ],
       "cflags!": ["-std=c++11"],
     }

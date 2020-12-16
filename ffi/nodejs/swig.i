@@ -1,6 +1,6 @@
 %module rgb_node
 %{
-#include "../../rust-lib/rgb_node.h"
+#include "../../librgb/librgb.h"
 %}
 
 %typemap(out) CResult %{
@@ -38,4 +38,4 @@
     }
 %}
 
-%include "../../rust-lib/rgb_node.h"
+%include "../../librgb/librgb.h"

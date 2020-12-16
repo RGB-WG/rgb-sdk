@@ -1,14 +1,14 @@
-const lib = require('./build/Release/rgb_node')
+const rgb = require('./build/Release/rgb')
 
 exports.Node = class Node {
-    constructor(network, dataDir) {
-        this.network = network
+    constructor(dataDir, network) {
+        this.network = network || "testnet"
         this.dataDir = dataDir
-        this.runtime = lib.run_rgb_embedded(network, dataDir)
+        this.runtime = rgb.run_rgb_embedded(network, dataDir)
     }
 
     issue(ticker, name, description, precision, allocations, inflation, renomination, epoch) {
-        return lib.issue(
+        return rgb.issue(
             this.runtime,
             this.network,
             ticker,
@@ -23,23 +23,23 @@ exports.Node = class Node {
     }
 
     listAssets() {
-        return JSON.parse(lib.list_assets(this.runtime))
+        return JSON.parse(rgb.list_assets(this.runtime))
     }
 
     assetAllocations(contractId) {
-        return JSON.parse(lib.asset_allocations(this.runtime, contractId))
+        return JSON.parse(rgb.asset_allocations(this.runtime, contractId))
     }
 
     outpointAssets(outpoint) {
-        return JSON.parse(lib.outpoint_assets(this.runtime, outpoint))
+        return JSON.parse(rgb.outpoint_assets(this.runtime, outpoint))
     }
 
     invoice(contractId, amount, outpoint) {
-        return JSON.parse(lib.invoice(contractId, amount, outpoint))
+        return JSON.parse(rgb.invoice(contractId, amount, outpoint))
     }
 
     transfer(inputs, allocate, invoice, prototypePsbt, consignmentFile, transactionFile) {
-        return lib.transfer(
+        return rgb.transfer(
             this.runtime,
             JSON.stringify(inputs),
             JSON.stringify(allocate),
@@ -51,10 +51,10 @@ exports.Node = class Node {
     }
 
     validate(consignment_file) {
-        return lib.validate(this.runtime, consignment_file)
+        return rgb.validate(this.runtime, consignment_file)
     }
 
     accept(consignment_file, reveal_outpoints) {
-      return lib.accept(this.runtime, consignment_file, reveal_outpoints)
+      return rgb.accept(this.runtime, consignment_file, reveal_outpoints)
     }
 }

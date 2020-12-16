@@ -71,7 +71,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: lipo
-          args: --manifest-path rust-lib/Cargo.toml --release
+          args: --manifest-path librgb/Cargo.toml --release
   node:
     runs-on: ${{ matrix.os }}
     strategy:

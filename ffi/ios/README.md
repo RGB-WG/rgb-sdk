@@ -11,14 +11,14 @@ brew install cmake openssl zmq
 rustup target add aarch64-apple-ios x86_64-apple-ios
 cargo install cargo-lipo
 # build bindings
-cargo lipo --manifest-path rust-lib/Cargo.toml --release
+cargo lipo --manifest-path librgb/Cargo.toml --release
 ```
 
 These instructions will generate the files `librgb.a` in
-`rust-lib/target/universal/release/` and `rgb_node.h` in `rust-lib/`.
+`librgb/target/universal/release/` and `librgb.h` in `librgb/`.
 
 Add `librgb.a` to your project as an external framework/library and add
-`rgb_node.h` as an Objective-C bridging header.
+`librgb.h` as an Objective-C bridging header.
 
 You will also need to add `libzmq.a` as a library dependency. For this you will
 need to do manually compile ZMQ library from sources for iOS target and copy

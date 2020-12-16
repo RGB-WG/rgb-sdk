@@ -13,7 +13,7 @@ from setuptools.command.build_ext import build_ext
 from distutils.core import Extension, setup
 from subprocess import Popen, TimeoutExpired
 
-RUST_LIB = '../../rust-lib'
+RUST_LIB = '../../librgb'
 
 
 def _die(message):
@@ -24,7 +24,7 @@ def _die(message):
 
 def build_rust():
     """ Build Rust library """
-    cmd = ['cargo', 'build', '--manifest-path', RUST_LIB + '/Cargo.toml']
+    cmd = ['cargo', 'build', '--release', '--manifest-path', RUST_LIB + '/Cargo.toml']
     proc = Popen(cmd)
     try:
         _, _ = proc.communicate(timeout=600)
@@ -62,15 +62,15 @@ if __name__ == "__main__":
         '_rgb_node',
         sources=['swig.i'],
         swig_opts=['-c++', '-py3'],
-        extra_objects=[RUST_LIB + '/target/debug/librgb' + ext],
+        extra_objects=[RUST_LIB + '/target/release/librgb' + ext],
     )
     setup(
-        name        = 'rgb-sdk-python',
-        version     = '0.1.0',
+        name        = 'rgb',
+        version     = '0.2.0',
         author      = "LNP/BP Standards Association",
         description = 'RGB Python bindings',
         ext_modules = [rgb_node_module],
-        py_modules  = ["rgb_node"],
+        py_modules  = ["rgb"],
         cmdclass    = {
             'build_ext': BuildExt,
         },

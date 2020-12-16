@@ -5,8 +5,8 @@
 In order to build Node.js bindings, from the project root follow the
 [Local](#local) or [In docker](#in-docker) instructions.
 
-Both instructions will generate the files `librgb.so` in `rust-lib/target/debug/`
-and `rgb_node.node` in `ffi/nodejs/build/Release/`.
+Both instructions will generate the files `librgb.so` in `rust-lib/target/release/`
+and `rgb.node` in `ffi/nodejs/build/Release/`.
 
 ### Local
 
@@ -23,9 +23,9 @@ npm install
 docker build -f ffi/nodejs/Dockerfile -t rgb-sdk-nodejs .
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
     rgb-sdk-nodejs \
-    -c 'mkdir -p /opt/mount/rust-lib/target/debug /opt/mount/ffi/nodejs/build/Release \
-    && cp /rgb-sdk/target/debug/librgb.so /opt/mount/rust-lib/target/debug/librgb.so \
-    && cp /rgb-sdk/rgb_node.node /opt/mount/ffi/nodejs/build/Release/rgb_node.node'
+    -c 'mkdir -p /opt/mount/librgb/target/release /opt/mount/ffi/nodejs/build/Release \
+    && cp /rgb-sdk/target/release/librgb.so /opt/mount/librgb/target/release/librgb.so \
+    && cp /rgb-sdk/rgb.node /opt/mount/ffi/nodejs/build/Release/rgb.node'
 ```
 
 ## Usage

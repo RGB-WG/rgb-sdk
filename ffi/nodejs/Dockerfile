@@ -29,7 +29,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | 
     nvm install v10 --lts && \
     nvm alias default v10
 
-WORKDIR /rgb-sdk/ffi/nodejs
+WORKDIR /librgb/ffi/nodejs
 
 RUN . $HOME/.nvm/nvm.sh && npm install --unsafe-perm
 
@@ -45,9 +45,9 @@ RUN apt-get update -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /rgb-sdk/target/debug/ /rgb-sdk/ffi/nodejs/
+RUN mkdir -p /librgb/target/release/ /librgb/ffi/nodejs/
 
-COPY --from=builder /rgb-sdk/ffi/nodejs/build/Release/rgb_node.node /rgb-sdk/
-COPY --from=builder /rgb-sdk/rust-lib/target/debug/librgb.so /rgb-sdk/target/debug/
+COPY --from=builder /rgb-sdk/ffi/nodejs/build/Release/rgb.node /librgb/
+COPY --from=builder /rgb-sdk/librgb/target/release/librgb.so /librgb/target/release/
 
 WORKDIR /rgb-sdk/

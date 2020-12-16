@@ -1,7 +1,7 @@
 %module rgb_node
 %{
 #define SWIG_FILE_WITH_INIT
-#include "../../rust-lib/rgb_node.h"
+#include "../../librgb/librgb.h"
 %}
 
 %typemap(out) CResult %{
@@ -26,4 +26,4 @@
     }
 %}
 
-%include "../../rust-lib/rgb_node.h"
+%include "../../librgb/librgb.h"

@@ -5,7 +5,7 @@ In order to run this demo, build the rgb bindings by following
 
 ```bash
 mkdir demo/ios/Libraries
-cp rust-lib/target/universal/release/librgb.a demo/ios/Libraries/
+cp librgb/target/universal/release/librgb.a demo/ios/Libraries/
 cp <path_to_libzmq>/builds/ios/lib/libzmq.a demo/ios/Libraries/
 ```
 

@@ -1038,6 +1038,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1482821306169ec4d07f6aca392a4681f66c75c9918aa49641a2595db64053cb"
 
 [[package]]
+name = "librgb"
+version = "0.2.0"
+dependencies = [
+ "amplify",
+ "amplify_derive",
+ "android_logger",
+ "cbindgen",
+ "env_logger",
+ "libsqlite3-sys",
+ "log",
+ "openssl",
+ "rgb_node",
+ "serde 1.0.118",
+ "serde_json",
+ "serde_with",
+ "serde_with_macros",
+ "zmq",
+]
+
+[[package]]
 name = "libsqlite3-sys"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1713,26 +1733,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3acd125665422973a33ac9d3dd2df85edad0f4ae9b00dafb1a05e43a9f5ef8e7"
 dependencies = [
  "winapi 0.3.9",
-]
-
-[[package]]
-name = "rgb"
-version = "0.1.0-rc.1"
-dependencies = [
- "amplify",
- "amplify_derive",
- "android_logger",
- "cbindgen",
- "env_logger",
- "libsqlite3-sys",
- "log",
- "openssl",
- "rgb_node",
- "serde 1.0.118",
- "serde_json",
- "serde_with",
- "serde_with_macros",
- "zmq",
 ]
 
 [[package]]

@@ -19,11 +19,6 @@
 **/package-lock.json
 **/swig_wrap.*
 
-/ffi/android/build
-/ffi/android/library/build
-/ffi/android/library/src/main/java/org/lnpbp/rgbnode_autogen
-/ffi/android/library/src/main/jniLibs
-
 # IDEs data
 **/*.swo
 **/*.swp

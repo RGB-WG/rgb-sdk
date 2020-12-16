@@ -1,2 +1,2 @@
-rootProject.name='RgbNode'
+rootProject.name='Rgb'
 include ':library'

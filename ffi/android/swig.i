@@ -1,4 +1,4 @@
-%module rgb_node
+%module rgb
 %{
 #include "../../librgb/librgb.h"
 %}

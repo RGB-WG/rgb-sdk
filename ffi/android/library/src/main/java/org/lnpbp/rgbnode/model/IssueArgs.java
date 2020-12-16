@@ -1,4 +1,4 @@
-package org.lnpbp.rgbnode.model;
+package org.lnpbp.rgb.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

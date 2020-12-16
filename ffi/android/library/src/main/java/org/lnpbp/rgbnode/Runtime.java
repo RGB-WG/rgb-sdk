@@ -1,11 +1,11 @@
-package org.lnpbp.rgbnode;
+package org.lnpbp.rgb;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.lnpbp.rgbnode.model.IssueArgs;
-import org.lnpbp.rgbnode_autogen.COpaqueStruct;
-import org.lnpbp.rgbnode_autogen.rgb_node;
+import org.lnpbp.rgb.model.IssueArgs;
+import org.lnpbp.rgb_autogen.COpaqueStruct;
+import org.lnpbp.rgb_autogen.rgb;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ public class Runtime {
     public Runtime(final String network, final String datadir) throws RuntimeException {
         mapper = new ObjectMapper();
         try {
-            this.runtime = rgb_node.run_rgb_embedded(network, datadir);
+            this.runtime = rgb.run_rgb_embedded(network, datadir);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -30,7 +30,7 @@ public class Runtime {
             final String inflationStr = mapper.writeValueAsString(inflation);
             final String renominationStr = mapper.writeValueAsString(renomination);
             final String epochStr = mapper.writeValueAsString(epoch);
-            rgb_node.issue(this.runtime, network, ticker, name, description, precision, allocationsStr, inflationStr,
+            rgb.issue(this.runtime, network, ticker, name, description, precision, allocationsStr, inflationStr,
                 renominationStr, epochStr);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -41,7 +41,7 @@ public class Runtime {
         try {
             final String inputsStr = mapper.writeValueAsString(inputs);
             final String allocateStr = mapper.writeValueAsString(allocate);
-            rgb_node.transfer(this.runtime, inputsStr, allocateStr, invoice, prototype_psbt, consignment_file, transaction_file);
+            rgb.transfer(this.runtime, inputsStr, allocateStr, invoice, prototype_psbt, consignment_file, transaction_file);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -49,7 +49,7 @@ public class Runtime {
 
     public String assetAllocations(String contractId) throws RuntimeException {
         try {
-            return rgb_node.asset_allocations(this.runtime, contractId);
+            return rgb.asset_allocations(this.runtime, contractId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +57,7 @@ public class Runtime {
 
     public String outpointAssets(String outpoint) throws RuntimeException {
         try {
-            return rgb_node.outpoint_assets(this.runtime, outpoint);
+            return rgb.outpoint_assets(this.runtime, outpoint);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

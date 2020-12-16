@@ -22,6 +22,22 @@ exports.Node = class Node {
         )
     }
 
+    listAssets() {
+        return JSON.parse(lib.list_assets(this.runtime))
+    }
+
+    assetAllocations(contractId) {
+        return JSON.parse(lib.asset_allocations(this.runtime, contractId))
+    }
+
+    outpointAssets(outpoint) {
+        return JSON.parse(lib.outpoint_assets(this.runtime, outpoint))
+    }
+
+    invoice(contractId, amount, outpoint) {
+        return JSON.parse(lib.invoice(contractId, amount, outpoint))
+    }
+
     transfer(inputs, allocate, invoice, prototypePsbt, consignmentFile, transactionFile) {
         return lib.transfer(
             this.runtime,
@@ -34,23 +50,11 @@ exports.Node = class Node {
         )
     }
 
-    listAssets() {
-        return JSON.parse(lib.list_assets(this.runtime))
-    }
-
-    assetAllocations(contractId) {
-        return lib.asset_allocations(this.runtime, contractId)
-    }
-
-    outpointAssets(outpoint) {
-        return lib.outpoint_assets(this.runtime, outpoint)
+    validate(consignment_file) {
+        return lib.validate(this.runtime, consignment_file)
     }
 
     accept(consignment_file, reveal_outpoints) {
       return lib.accept(this.runtime, consignment_file, reveal_outpoints)
-    }
-
-    validate(consignment_file) {
-      return lib.validate(this.runtime, consignment_file)
     }
 }

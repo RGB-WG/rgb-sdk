@@ -1,3 +1,12 @@
+#[macro_use]
+extern crate amplify;
+#[macro_use]
+extern crate amplify_derive;
+#[macro_use]
+extern crate log;
+#[macro_use]
+extern crate serde_json;
+
 use std::any::TypeId;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
@@ -13,25 +22,16 @@ use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
 use rgb::lnpbp::bp::blind::OutpointReveal;
 use rgb::lnpbp::client_side_validation::Conceal;
-use rgb::lnpbp::rgb::Consignment;
-use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
+use rgb::lnpbp::rgb::{Consignment, ContractId, FromBech32, Genesis};
 
 use rgb::api::reply::SyncFormat;
 use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
+use rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError;
 use rgb::lnpbp::strict_encoding::strict_decode;
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
 use rgb::DataFormat;
-
-#[macro_use]
-extern crate amplify;
-
-#[macro_use]
-extern crate amplify_derive;
-
-#[macro_use]
-extern crate log;
 
 trait CReturnType: Sized + 'static {
     fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, RequestError> {
@@ -269,10 +269,10 @@ fn _run_rgb_embedded(
     let fungible_pub_endpoint = s!("inproc://fungible-pub");
 
     let config = Config {
-        network: network,
-        stash_rpc_endpoint: stash_rpc_endpoint,
-        stash_pub_endpoint: stash_pub_endpoint,
-        fungible_pub_endpoint: fungible_pub_endpoint,
+        network,
+        stash_rpc_endpoint,
+        stash_pub_endpoint,
+        fungible_pub_endpoint,
         contract_endpoints: contract_endpoints
             .into_iter()
             .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v.parse()?)) })
@@ -449,8 +449,15 @@ fn _transfer(
 
     let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
 
-    let allocate: Vec<SealCoins> =
-        serde_json::from_str(&ptr_to_string(allocate)?)?;
+    let a: Vec<String> = serde_json::from_str(&ptr_to_string(allocate)?)?;
+    let mut allocate: Vec<SealCoins> = Vec::with_capacity(a.len());
+    for entry in a {
+        allocate.push(
+            SealCoins::from_str(&entry).map_err(|_| {
+                RequestError::Outpoint(ParseOutPointError::Format)
+            })?,
+        );
+    }
 
     let c_invoice = unsafe { CStr::from_ptr(invoice) };
     let invoice = Invoice::from_str(c_invoice.to_str()?)?;
@@ -579,20 +586,27 @@ fn _invoice(
     amount: c_double,
     outpoint: *const c_char,
 ) -> Result<String, RequestError> {
-    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+    let contract_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
 
     let outpoint = OutPoint::from_str(&ptr_to_string(outpoint)?)?;
 
     let outpoint_reveal = OutpointReveal::from(outpoint);
     let invoice = Invoice {
-        contract_id: asset_id,
+        contract_id,
         outpoint: Outpoint::BlindedUtxo(outpoint_reveal.conceal()),
-        amount: amount,
+        amount,
     };
 
-    debug!("Created invoice: {}", invoice);
+    debug!(
+        "Created invoice {}, blinding factor {}",
+        invoice, outpoint_reveal.blinding
+    );
 
-    Ok(invoice.to_string())
+    let json_response = json!({
+        "invoice": invoice.to_string(),
+        "secret": outpoint_reveal.blinding
+    });
+    Ok(json_response.to_string())
 }
 
 #[no_mangle]

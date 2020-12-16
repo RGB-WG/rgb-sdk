@@ -10,6 +10,6 @@ import rgblib
 
 class Rgb {
     init() {
-        run_rgb_embedded("testnet", "../../data")
+        rgb_node_run("testnet", "../../data")
     }
 }

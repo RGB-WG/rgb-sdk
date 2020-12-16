@@ -11,6 +11,7 @@
 		3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; };
 		3063CCFE258AB6EA00368A28 /* rgblib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3063CD01258AB6FC00368A28 /* RgbClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3063CD00258AB6FC00368A28 /* RgbClient.swift */; };
+		3063CD36258ABD4800368A28 /* librgb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CD35258ABD4800368A28 /* librgb.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		3063CCDE258AB46700368A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = rgblib.xcodeproj; path = ../../bindings/darwin/rgblib.xcodeproj; sourceTree = "<group>"; };
 		3063CD00258AB6FC00368A28 /* RgbClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RgbClient.swift; sourceTree = "<group>"; };
+		3063CD35258ABD4800368A28 /* librgb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librgb.a; path = ../../librgb/target/universal/release/librgb.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3063CD36258ABD4800368A28 /* librgb.a in Frameworks */,
 				3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +98,7 @@
 		3063CCED258AB68D00368A28 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3063CD35258ABD4800368A28 /* librgb.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -271,10 +275,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-lc++";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -329,9 +334,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-lc++";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -358,6 +364,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -384,6 +391,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

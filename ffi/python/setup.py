@@ -52,14 +52,14 @@ class BuildExt(build_ext):
 
 if __name__ == "__main__":
     if platform.system() == "Darwin":
-        ext = ".dylib"
+        ext = ".a"
     elif platform.system() == "Windows":
-        ext = ".dll"
+        ext = ".obj"
     else:
-        ext = ".so"
+        ext = ".a"
 
     rgb_node_module = Extension(
-        '_rgb_node',
+        '_rgb',
         sources=['swig.i'],
         swig_opts=['-c++', '-py3'],
         extra_objects=[RUST_LIB + '/target/release/librgb' + ext],

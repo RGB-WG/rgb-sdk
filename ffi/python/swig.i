@@ -1,4 +1,4 @@
-%module rgb_node
+%module rgb
 %{
 #define SWIG_FILE_WITH_INIT
 #include "../../librgb/librgb.h"

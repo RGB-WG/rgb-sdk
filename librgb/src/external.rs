@@ -17,7 +17,7 @@ use crate::helpers::*;
 use crate::internal::*;
 
 #[no_mangle]
-pub extern "C" fn start_rgb(
+pub extern "C" fn rgb_node_connect(
     network: *const c_char,
     stash_rpc_endpoint: *const c_char,
     contract_endpoints: *const c_char,
@@ -39,7 +39,7 @@ pub extern "C" fn start_rgb(
 }
 
 #[no_mangle]
-pub extern "C" fn run_rgb_embedded(
+pub extern "C" fn rgb_node_run(
     network: *const c_char,
     datadir: *const c_char,
 ) -> CResult {
@@ -51,7 +51,7 @@ pub extern "C" fn run_rgb_embedded(
 }
 
 #[no_mangle]
-pub extern "C" fn issue(
+pub extern "C" fn rgb_node_fungible_issue(
     runtime: &COpaqueStruct,
     network: *const c_char,
     ticker: *const c_char,
@@ -79,12 +79,14 @@ pub extern "C" fn issue(
 }
 
 #[no_mangle]
-pub extern "C" fn list_assets(runtime: &COpaqueStruct) -> CResultString {
+pub extern "C" fn rgb_node_fungible_list_assets(
+    runtime: &COpaqueStruct,
+) -> CResultString {
     _list_assets(runtime).into()
 }
 
 #[no_mangle]
-pub extern "C" fn asset_allocations(
+pub extern "C" fn rgb_node_fungible_asset_allocations(
     runtime: &COpaqueStruct,
     contract_id: *const c_char,
 ) -> CResultString {
@@ -92,7 +94,7 @@ pub extern "C" fn asset_allocations(
 }
 
 #[no_mangle]
-pub extern "C" fn outpoint_assets(
+pub extern "C" fn rgb_node_fungible_outpoint_assets(
     runtime: &COpaqueStruct,
     outpoint: *const c_char,
 ) -> CResultString {
@@ -100,7 +102,7 @@ pub extern "C" fn outpoint_assets(
 }
 
 #[no_mangle]
-pub extern "C" fn export_asset(
+pub extern "C" fn rgb_node_fungible_export_asset(
     runtime: &COpaqueStruct,
     asset_id: *const c_char,
 ) -> CResultString {
@@ -108,7 +110,7 @@ pub extern "C" fn export_asset(
 }
 
 #[no_mangle]
-pub extern "C" fn import_asset(
+pub extern "C" fn rgb_node_fungible_import_asset(
     runtime: &COpaqueStruct,
     asset_genesis: *const c_char,
 ) -> CResult {
@@ -116,7 +118,7 @@ pub extern "C" fn import_asset(
 }
 
 #[no_mangle]
-pub extern "C" fn invoice(
+pub extern "C" fn rgb20_invoice(
     asset_id: *const c_char,
     amount: c_double,
     outpoint: *const c_char,
@@ -125,7 +127,7 @@ pub extern "C" fn invoice(
 }
 
 #[no_mangle]
-pub extern "C" fn transfer(
+pub extern "C" fn rgb_node_fungible_transfer(
     runtime: &COpaqueStruct,
     inputs: *const c_char,
     allocate: *const c_char,
@@ -147,7 +149,7 @@ pub extern "C" fn transfer(
 }
 
 #[no_mangle]
-pub extern "C" fn validate(
+pub extern "C" fn rgb_node_fungible_validate(
     runtime: &COpaqueStruct,
     consignment_file: *const c_char,
 ) -> CResult {
@@ -155,7 +157,7 @@ pub extern "C" fn validate(
 }
 
 #[no_mangle]
-pub extern "C" fn accept(
+pub extern "C" fn rgb_node_fungible_accept(
     runtime: &COpaqueStruct,
     consignment_file: *const c_char,
     reveal_outpoints: *const c_char,

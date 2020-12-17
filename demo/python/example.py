@@ -13,11 +13,7 @@ from json import dumps
 
 config = {
     'network': 'testnet',
-    'stash_endpoint': 'lnpz:/tmp/rgb-node/testnet/stashd.rpc',
-    'contract_endpoints': {
-        'Fungible': 'lnpz:/tmp/rgb-node/testnet/fungibled.rpc'
-    },
-    'threaded': True,
+    'electrum': 'pandora.network:60001',
     'datadir': '/tmp/rgb-node/'
 }
 
@@ -59,12 +55,11 @@ asset_id = 'rgb1scxapanh6jj9ceapvxgdzr68jumjdu44ezt3ewy4h6ahz8hkd0fs6utwne'
 
 
 try:
-    runtime = rgb_node_connect(
+    runtime = rgb_node_run(
+        config['datadir'],
         config['network'],
-        config['stash_endpoint'],
-        dumps(config['contract_endpoints']),
-        config['threaded'],
-        config['datadir'])
+        config['electrum'],
+        3)
     rgb_node_fungible_issue(runtime, issue_data['network'], issue_data['ticker'], issue_data['name'],
               issue_data['description'], issue_data['precision'],
               dumps(issue_data['allocations']), dumps(issue_data['inflation']),

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.lnpbp.rgb.model.OutpointCoins;
-import org.lnpbp.rgb.model.OutPoint;
 import org.lnpbp.rgb_autogen.COpaqueStruct;
 import org.lnpbp.rgb_autogen.rgb;
 
@@ -14,24 +13,26 @@ import java.util.List;
 
 public class Runtime {
     private final COpaqueStruct runtime;
+    private final String network;
     private final ObjectMapper mapper;
 
-    public Runtime(final String network, final String datadir) throws RuntimeException {
+    public Runtime(final String datadir, final String network, final String electrum) throws RuntimeException {
         mapper = new ObjectMapper();
+        this.network = network;
         try {
-            this.runtime = rgb.rgb_node_run(network, datadir);
+            this.runtime = rgb.rgb_node_run(datadir, network, electrum, 3);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void issue(final String network, final String ticker, final String name, final String description, final byte precision, final List<OutpointCoins> allocations, final HashSet<OutpointCoins> inflation, final OutPoint renomination, final OutPoint epoch) throws RuntimeException {
+    public void issue(final String ticker, final String name, final String description, final byte precision, final List<OutpointCoins> allocations, final HashSet<OutpointCoins> inflation, final OutPoint renomination, final OutPoint epoch) throws RuntimeException {
         try {
             final String allocationsStr = mapper.writeValueAsString(allocations);
             final String inflationStr = mapper.writeValueAsString(inflation);
             final String renominationStr = mapper.writeValueAsString(renomination);
             final String epochStr = mapper.writeValueAsString(epoch);
-            rgb.rgb_node_fungible_issue(this.runtime, network, ticker, name, description, precision, allocationsStr, inflationStr,
+            rgb.rgb_node_fungible_issue(this.runtime, this.network, ticker, name, description, precision, allocationsStr, inflationStr,
                 renominationStr, epochStr);
         } catch (Exception e) {
             throw new RuntimeException(e);

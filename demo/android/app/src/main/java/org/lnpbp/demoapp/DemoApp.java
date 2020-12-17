@@ -29,7 +29,7 @@ public class DemoApp extends Application {
         this.dataDir = getFilesDir().toString();
 
         try {
-            this.runtime = new Runtime(this.network, this.dataDir);
+            this.runtime = new Runtime(this.dataDir, this.network, "pandora.network:60001");
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }

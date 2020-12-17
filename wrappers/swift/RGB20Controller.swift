@@ -20,16 +20,24 @@ public struct RGBError: Error {
     }
 }
 
+public enum Verbosity: UInt8 {
+    case Error = 0
+    case Warning = 1
+    case Info = 2
+    case Debug = 3
+    case Trace = 4
+}
+
 open class RGB20Controller {
     private var client: COpaqueStruct
     let network: String
     let dataDir: String
     
-    public init(network: String = "testnet") throws {
+    public init(network: String = "testnet", electrum: String = "pandora.network:60001", verbosity: Verbosity = .Info) throws {
         self.network = network
         self.dataDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
 
-        let client = rgb_node_run(self.network, self.dataDir)
+        let client = rgb_node_run(self.dataDir, self.network, electrum, verbosity.rawValue)
         
         guard client.result.rawValue == 0 else {
             throw RGBError(client)

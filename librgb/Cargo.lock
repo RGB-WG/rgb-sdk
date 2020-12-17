@@ -1074,7 +1074,7 @@ version = "0.3.0"
 source = "git+https://github.com/LNP-BP/rust-lightning-invoice?tag=systemtime-fix#979dce954315a386528fd1ddbde1a27fa89f00c1"
 dependencies = [
  "bech32",
- "bitcoin_hashes 0.7.6",
+ "bitcoin_hashes 0.9.4",
  "num-traits 0.2.14",
  "secp256k1",
 ]
@@ -1737,9 +1737,9 @@ dependencies = [
 
 [[package]]
 name = "rgb_node"
-version = "0.2.0-rc.5"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6374b2b0cd5856f82d1042a602c01267eb3e4e42b179cdc41cea7fb585ebe180"
+checksum = "3cb7db217df4ccae45c5ccf8b352a195f740a5f52a4d8f6e07ed6c72fed38195"
 dependencies = [
  "amplify",
  "amplify_derive",

@@ -1,10 +1,15 @@
 const lib = require('../../bindings/npm/rgblib')
 
 exports.Node = class Node {
-    constructor(dataDir, network) {
+    constructor(dataDir, network, electrum, verbosity) {
         this.network = network || "testnet"
         this.dataDir = dataDir
-        this.runtime = lib.rgb_node_run(network, dataDir)
+        electrum = electrum || ("pandora.network:" + {
+            "bitcoin": "50001",
+            "testnet": "60001",
+            "signet": "60601"
+        }[this.network] || "60001")
+        this.runtime = lib.rgb_node_run(dataDir, network, electrum, verbosity || 0)
     }
 
     issue(ticker, name, description, precision, allocations, inflation, renomination, epoch) {

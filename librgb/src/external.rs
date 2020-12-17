@@ -18,36 +18,40 @@ use crate::internal::*;
 
 #[no_mangle]
 pub extern "C" fn rgb_node_connect(
+    datadir: *const c_char,
     network: *const c_char,
     stash_rpc_endpoint: *const c_char,
     contract_endpoints: *const c_char,
-    threaded: bool,
-    datadir: *const c_char,
+    electrum: *const c_char,
+    verbosity: c_uchar,
 ) -> CResult {
     _start_logger();
 
     info!("Connecting RGB node...");
 
     _connect_rgb(
+        datadir,
         network,
         stash_rpc_endpoint,
         contract_endpoints,
-        threaded,
-        datadir,
+        electrum,
+        verbosity,
     )
     .into()
 }
 
 #[no_mangle]
 pub extern "C" fn rgb_node_run(
-    network: *const c_char,
     datadir: *const c_char,
+    network: *const c_char,
+    electrum: *const c_char,
+    verbosity: c_uchar,
 ) -> CResult {
     _start_logger();
 
     info!("Running embedded RGB node...");
 
-    _run_rgb_embedded(network, datadir).into()
+    _run_rgb_embedded(datadir, network, electrum, verbosity).into()
 }
 
 #[no_mangle]

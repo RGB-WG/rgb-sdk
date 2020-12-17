@@ -26,9 +26,9 @@ pub extern "C" fn rgb_node_connect(
 ) -> CResult {
     _start_logger();
 
-    info!("Starting RGB in connected mode...");
+    info!("Connecting RGB node...");
 
-    _start_rgb(
+    _connect_rgb(
         network,
         stash_rpc_endpoint,
         contract_endpoints,
@@ -45,7 +45,7 @@ pub extern "C" fn rgb_node_run(
 ) -> CResult {
     _start_logger();
 
-    info!("Starting RGB in embedded mode...");
+    info!("Running embedded RGB node...");
 
     _run_rgb_embedded(network, datadir).into()
 }

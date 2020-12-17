@@ -39,7 +39,7 @@ use rgb::DataFormat;
 use crate::error::RequestError;
 use crate::helpers::*;
 
-pub(crate) fn _start_rgb(
+pub(crate) fn _connect_rgb(
     network: *const c_char,
     stash_rpc_endpoint: *const c_char,
     contract_endpoints: *const c_char,

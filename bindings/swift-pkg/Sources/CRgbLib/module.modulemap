@@ -1,0 +1,5 @@
+module CRgbLib [system] {
+    header "../../Headers/CRgbLib-Bridging-Header.h"
+    link "../../../../librgb/target/universal/release/librgb.a"
+    export *
+}

@@ -3,11 +3,11 @@
 ### Build and run
 
 In order to run this demo, build the rgb bindings by following
-[these instructions](/ffi/android) and then, from the project root, run:
+[these instructions](/bindings/android) and then, from the project root, run:
 
 ```bash
 $ mkdir demo/android/app/libs
-$ cp ffi/android/library/build/outputs/aar/library-debug.aar demo/android/app/libs/
+$ cp bindings/android/library/build/outputs/aar/library-debug.aar demo/android/app/libs/
 ```
 
 Open the android project from Android Studio

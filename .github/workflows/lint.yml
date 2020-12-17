@@ -24,4 +24,4 @@ jobs:
         name: Lints
         with:
           command: fmt
-          args: --manifest-path rust-lib/Cargo.toml --all -- --check
+          args: --manifest-path librgb/Cargo.toml --all -- --check

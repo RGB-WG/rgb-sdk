@@ -1,4 +1,4 @@
-const rgb = require('../../ffi/nodejs/rgb_node')
+const rgb = require('../../wrappers/ecmascript/rgb')
 
 const DATA_DIR = "../../data"
 
@@ -19,7 +19,7 @@ const PSBT = "cHNidP8BAFICAAAAAZ38ZijCbFiZ/hvT3DOGZb/VXXraEPYiCXPfLTht7BJ2AQAAAA
     "XMUAAACAAAAAgAEAAIAA"
 
 function main() {
-    let rgbNode = new rgb.Node("testnet", DATA_DIR)
+    let rgbNode = new rgb.Node(DATA_DIR, "testnet")
     console.log("RGB node runtime has started")
 
     let issuedAmount = 1000000.0;

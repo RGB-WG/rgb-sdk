@@ -1,5 +1,0 @@
-**/__pycache__
-**/*.so
-/build
-/rgb_node.py
-/swig_wrap.cpp

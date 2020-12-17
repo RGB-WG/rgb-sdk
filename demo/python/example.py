@@ -5,19 +5,15 @@ RGB Python demo application
 """
 
 import sys
-sys.path.insert(1, '../../ffi/python')
-import rgb_node as lib
+sys.path.insert(1, '../../bindings/python')
+from rgb import *
 
 from json import dumps
 
 
 config = {
     'network': 'testnet',
-    'stash_endpoint': 'lnpz:/tmp/rgb-node/testnet/stashd.rpc',
-    'contract_endpoints': {
-        'Fungible': 'lnpz:/tmp/rgb-node/testnet/fungibled.rpc'
-    },
-    'threaded': True,
+    'electrum': 'pandora.network:60001',
     'datadir': '/tmp/rgb-node/'
 }
 
@@ -59,25 +55,24 @@ asset_id = 'rgb1scxapanh6jj9ceapvxgdzr68jumjdu44ezt3ewy4h6ahz8hkd0fs6utwne'
 
 
 try:
-    runtime = lib.start_rgb(
+    runtime = rgb_node_run(
+        config['datadir'],
         config['network'],
-        config['stash_endpoint'],
-        dumps(config['contract_endpoints']),
-        config['threaded'],
-        config['datadir'])
-    lib.issue(runtime, issue_data['network'], issue_data['ticker'], issue_data['name'],
+        config['electrum'],
+        3)
+    rgb_node_fungible_issue(runtime, issue_data['network'], issue_data['ticker'], issue_data['name'],
               issue_data['description'], issue_data['precision'],
               dumps(issue_data['allocations']), dumps(issue_data['inflation']),
               dumps(issue_data['renomination']), dumps(issue_data['epoch']))
-    assets = lib.list_assets(runtime)
+    assets = rgb_node_fungible_list_assets(runtime)
     print('assets: {}'.format(assets))
     """
-    invoice = lib.invoice(asset_id, 66.6, input_outpoint)
+    invoice = rgb_node_fungible_invoice(asset_id, 66.6, input_outpoint)
     print('invoice: {}'.format(invoice))
-    assets = lib.outpoint_assets(runtime, input_outpoint)
+    assets = rgb_node_fungible_outpoint_assets(runtime, input_outpoint)
     print("asset list for '{}': {}".format(input_outpoint, assets))
-    lib.import_asset(runtime, asset_genesis)
-    genesis = lib.export_asset(runtime, asset_id)
+    rgb_node_fungible_import_asset(runtime, asset_genesis)
+    genesis = rgb_node_fungible_export_asset(runtime, asset_id)
     print('genesis: {}'.format(genesis))
     """
 except Exception as e:

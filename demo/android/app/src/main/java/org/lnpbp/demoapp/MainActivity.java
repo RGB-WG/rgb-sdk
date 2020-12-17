@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.lnpbp.rgbnode.Runtime;
-import org.lnpbp.rgbnode.model.IssueArgs;
+import org.lnpbp.rgbnode.model.OutpointCoins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,15 +42,16 @@ public class MainActivity extends AppCompatActivity {
                         final Runtime runtime = app.getRuntime();
                         try {
 
-                            final IssueArgs.OutpointCoins allocation = new IssueArgs.OutpointCoins(
+                            final OutpointCoins allocation = new OutpointCoins(
                                 100L,
                                 "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:0"
                             );
                             byte assetPrecision = 8;
                             runtime.issue(
-                                app.network,"USDT","USD Tether",
-                                "USD Tether description", assetPrecision,
-                                Arrays.asList(allocation), new HashSet<IssueArgs.OutpointCoins>(),
+                                "DEMO",
+                                "Demo token",
+                                "Token description", assetPrecision,
+                                Arrays.asList(allocation), new HashSet<OutpointCoins>(),
                                 null, null
                             );
                             Log.d(TAG, "issue completed");

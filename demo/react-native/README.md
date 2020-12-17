@@ -35,11 +35,11 @@ $ npx react-native start --port 8081
 ### Build and run
 
 Build the rgb-node android bindings by following
-[these instructions](/ffi/android) and then, from the project root, run:
+[these instructions](/bindings/android) and then, from the project root, run:
 
 ```bash
 $ mkdir -p demo/react-native/android/app/libs
-$ cp ffi/android/library/build/outputs/aar/library-debug.aar demo/react-native/android/app/libs/library-debug.aar
+$ cp bindings/android/library/build/outputs/aar/library-debug.aar demo/react-native/android/app/libs/library-debug.aar
 ```
 
 Open the android project from Android Studio

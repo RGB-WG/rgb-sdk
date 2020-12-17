@@ -1,0 +1,23 @@
+{
+  "name": "rgblib",
+  "version": "0.2.0-beta.1",
+  "description": "RGB (Bitcoin & Lightning Network smart contracts layer) c-library bindings (librgb)",
+  "homepage": "https://github.com/LNP-BP/rgb-sdk/tree/master/bindings/npm",
+  "keywords": [
+    "bitcoin",
+    "rgb",
+    "lightning-network",
+    "smartcontracts"
+  ],
+  "main": "rgblib.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "cargo build --release --manifest-path ../../librgb/Cargo.toml && swig -javascript -node -c++ swig.i",
+    "install": "node ./node_modules/node-gyp/bin/node-gyp.js rebuild"
+  },
+  "author": "LNP/BP Standards Association",
+  "license": "MIT",
+  "dependencies": {
+    "node-gyp": "^7.1.0"
+  }
+}

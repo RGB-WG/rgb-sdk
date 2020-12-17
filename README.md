@@ -15,8 +15,8 @@ then follow the instructions specific to your language binding of choice.
 
 The following bindings are available:
 - [Android](/ffi/android)
-- [iOS](/ffi/ios)
-- [Node.js](/ffi/nodejs)
+- [iOS](/ffi/swift)
+- [Node.js](/ffi/npm)
 - [Python](/ffi/python)
 
 ## Developer guidelines

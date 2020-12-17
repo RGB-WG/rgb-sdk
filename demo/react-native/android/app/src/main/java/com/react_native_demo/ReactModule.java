@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
 import org.lnpbp.rgbnode.Runtime;
-import org.lnpbp.rgbnode.model.IssueArgs;
+import org.lnpbp.rgbnode.model.OutpointCoins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +42,8 @@ public class ReactModule extends ReactContextBaseJavaModule {
         try {
             final Runtime runtime = ((MainApplication) getCurrentActivity().getApplication()).getRuntime();
 
-            final IssueArgs.OutpointCoins allocation = new IssueArgs.OutpointCoins((long) alloc_coins, alloc_outpoint);
-            runtime.issue(network, ticker, name, description, precision, Arrays.asList(allocation), new HashSet<IssueArgs.OutpointCoins>(), null, null);
+            final OutpointCoins allocation = new OutpointCoins((long) alloc_coins, alloc_outpoint);
+            runtime.issue(network, ticker, name, description, precision, Arrays.asList(allocation), new HashSet<OutpointCoins>(), null, null);
 
 
             WritableMap map = Arguments.createMap();

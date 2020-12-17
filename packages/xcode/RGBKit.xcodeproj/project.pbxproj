@@ -1,0 +1,448 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3063CCDF258AB46700368A28 /* RGBKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CCDD258AB46700368A28 /* RGBKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; };
+		3063CCFE258AB6EA00368A28 /* rgblib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCFB258AB6E200368A28 /* rgblib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3063CD36258ABD4800368A28 /* librgb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CD35258ABD4800368A28 /* librgb.a */; };
+		3063CD5C258AEAAC00368A28 /* RGB20Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3063CD5B258AEAAC00368A28 /* RGB20Controller.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3063CCFA258AB6E200368A28 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3063CCB6258AAE5D00368A28;
+			remoteInfo = rgblib;
+		};
+		3063CD32258ABA4A00368A28 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 3063CCB5258AAE5D00368A28;
+			remoteInfo = rgblib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3063CCFF258AB6EA00368A28 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3063CCFE258AB6EA00368A28 /* rgblib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3063CCDA258AB46700368A28 /* RGBKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RGBKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3063CCDD258AB46700368A28 /* RGBKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBKit.h; sourceTree = "<group>"; };
+		3063CCDE258AB46700368A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = rgblib.xcodeproj; path = ../../bindings/darwin/rgblib.xcodeproj; sourceTree = "<group>"; };
+		3063CD35258ABD4800368A28 /* librgb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librgb.a; path = ../../librgb/target/universal/release/librgb.a; sourceTree = "<group>"; };
+		3063CD5B258AEAAC00368A28 /* RGB20Controller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RGB20Controller.swift; path = ../../../wrappers/swift/RGB20Controller.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3063CCD7258AB46700368A28 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3063CD36258ABD4800368A28 /* librgb.a in Frameworks */,
+				3063CCFD258AB6EA00368A28 /* rgblib.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3063CCD0258AB46700368A28 = {
+			isa = PBXGroup;
+			children = (
+				3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */,
+				3063CCDC258AB46700368A28 /* RGBKit */,
+				3063CCDB258AB46700368A28 /* Products */,
+				3063CCED258AB68D00368A28 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		3063CCDB258AB46700368A28 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3063CCDA258AB46700368A28 /* RGBKit.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3063CCDC258AB46700368A28 /* RGBKit */ = {
+			isa = PBXGroup;
+			children = (
+				3063CD5B258AEAAC00368A28 /* RGB20Controller.swift */,
+				3063CCDD258AB46700368A28 /* RGBKit.h */,
+				3063CCDE258AB46700368A28 /* Info.plist */,
+			);
+			path = RGBKit;
+			sourceTree = "<group>";
+		};
+		3063CCED258AB68D00368A28 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3063CD35258ABD4800368A28 /* librgb.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3063CCF7258AB6E200368A28 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3063CCFB258AB6E200368A28 /* rgblib.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		3063CCD5258AB46700368A28 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3063CCDF258AB46700368A28 /* RGBKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		3063CCD9258AB46700368A28 /* RGBKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3063CCE2258AB46700368A28 /* Build configuration list for PBXNativeTarget "RGBKit" */;
+			buildPhases = (
+				3063CD3B258AE43300368A28 /* ShellScript */,
+				3063CCD5258AB46700368A28 /* Headers */,
+				3063CCD6258AB46700368A28 /* Sources */,
+				3063CCD7258AB46700368A28 /* Frameworks */,
+				3063CCD8258AB46700368A28 /* Resources */,
+				3063CCFF258AB6EA00368A28 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3063CD33258ABA4A00368A28 /* PBXTargetDependency */,
+			);
+			name = RGBKit;
+			productName = Rgb;
+			productReference = 3063CCDA258AB46700368A28 /* RGBKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3063CCD1258AB46700368A28 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					3063CCD9258AB46700368A28 = {
+						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
+					};
+				};
+			};
+			buildConfigurationList = 3063CCD4258AB46700368A28 /* Build configuration list for PBXProject "RGBKit" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3063CCD0258AB46700368A28;
+			productRefGroup = 3063CCDB258AB46700368A28 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3063CCF7258AB6E200368A28 /* Products */;
+					ProjectRef = 3063CCF6258AB6E200368A28 /* rgblib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				3063CCD9258AB46700368A28 /* RGBKit */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3063CCFB258AB6E200368A28 /* rgblib.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = rgblib.framework;
+			remoteRef = 3063CCFA258AB6E200368A28 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3063CCD8258AB46700368A28 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3063CD3B258AE43300368A28 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3063CCD6258AB46700368A28 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3063CD5C258AEAAC00368A28 /* RGB20Controller.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3063CD33258ABA4A00368A28 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = rgblib;
+			targetProxy = 3063CD32258ABA4A00368A28 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3063CCE0258AB46700368A28 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-lc++";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		3063CCE1258AB46700368A28 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-lc++";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		3063CCE3258AB46700368A28 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = BLS4N8A6L6;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/RGBKit/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3063CCE4258AB46700368A28 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = BLS4N8A6L6;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/RGBKit/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = ../../librgb/target/universal/release;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.Rgb";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3063CCD4258AB46700368A28 /* Build configuration list for PBXProject "RGBKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3063CCE0258AB46700368A28 /* Debug */,
+				3063CCE1258AB46700368A28 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3063CCE2258AB46700368A28 /* Build configuration list for PBXNativeTarget "RGBKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3063CCE3258AB46700368A28 /* Debug */,
+				3063CCE4258AB46700368A28 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3063CCD1258AB46700368A28 /* Project object */;
+}

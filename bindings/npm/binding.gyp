@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "rgb",
+      "target_name": "rgblib",
       "sources": [ "swig_wrap.cxx" ],
       "libraries": [
            '-L<(module_root_dir)/../../librgb/target/release',

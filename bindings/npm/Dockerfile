@@ -47,7 +47,7 @@ RUN apt-get update -y \
 
 RUN mkdir -p /librgb/target/release/ /librgb/bindings/nodejs/
 
-COPY --from=builder /rgb-sdk/bindings/nodejs/build/Release/rgb.node /librgb/
+COPY --from=builder /rgb-sdk/bindings/nodejs/build/Release/rgblib.node /librgb/
 COPY --from=builder /rgb-sdk/librgb/target/release/librgb.so /librgb/target/release/
 
 WORKDIR /rgb-sdk/

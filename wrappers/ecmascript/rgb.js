@@ -1,4 +1,4 @@
-const lib = require('./build/Release/rgb')
+const lib = require('../../bindings/npm/rgblib')
 
 exports.Node = class Node {
     constructor(dataDir, network) {

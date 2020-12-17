@@ -1,4 +1,4 @@
-const rgb = require('../../bindings/npm/rgb')
+const rgb = require('../../wrappers/ecmascript/rgb')
 
 const DATA_DIR = "../../data"
 

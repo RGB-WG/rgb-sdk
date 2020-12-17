@@ -1,0 +1,11 @@
+{
+  "name": "@lnp-bp/rgb",
+  "version": "0.2.0-beta.1",
+  "description": "RGB library: Bitcoin & Lightning Network smart contracts layer",
+  "main": "../../wrappers/ecmascript/rgb.js",
+  "author": "LNP/BP Standards Association",
+  "license": "MIT",
+  "dependencies": {
+    "rgblib": "../../bindings/npm"
+  }
+}

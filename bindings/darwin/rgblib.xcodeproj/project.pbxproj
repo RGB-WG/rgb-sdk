@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -88,6 +88,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3063CCBE258AAE5D00368A28 /* Build configuration list for PBXNativeTarget "rgblib" */;
 			buildPhases = (
+				3063CD3C258AE45500368A28 /* ShellScript */,
 				3063CCB1258AAE5D00368A28 /* Headers */,
 				3063CCB2258AAE5D00368A28 /* Sources */,
 				3063CCB3258AAE5D00368A28 /* Frameworks */,
@@ -142,6 +143,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3063CD3C258AE45500368A28 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n~/.cargo/bin/cargo lipo --manifest-path ../../librgb/Cargo.toml --release\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3063CCB2258AAE5D00368A28 /* Sources */ = {

@@ -8,29 +8,16 @@
 
 import UIKit
 import CoreData
+import RGBKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    lazy var runtime: Runtime? = {
-        let datadir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.path
-        let network = "testnet"
-        let contractEndpoints = ["Fungible": "lnpz://\(datadir)/\(network)/fungibled.rpc"]
-
-        let args = StartRgbArgs(
-            network: network,
-            stashEndpoint: "lnpz://\(datadir)/\(network)/stashd.rpc",
-            contractEndpoints: contractEndpoints,
-            threaded: true,
-            datadir: datadir
-        )
-                
-        do {
-            return try Runtime(args)
-        } catch {
-            print("Failed to start RGB: \(error.localizedDescription)")
+    lazy var rgbController: RGBController? = {
+        let controller = RGBController()
+        if controller == nil {
+            print("Failed to start RGB")
         }
-        
-        return nil
+        return controller
     }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

@@ -17,11 +17,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func onAssetIssue(_ sender: Any) {
-        guard let runtime = (UIApplication.shared.delegate as! AppDelegate).runtime else {
+        guard let rgbController = (UIApplication.shared.delegate as! AppDelegate).rgbController else {
             issueResult.text = "RGB runtime failed to start"
             return
         }
         
+        /*
         let allocations = CoinAllocation(
             coins: 100,
             vout: 0,
@@ -70,6 +71,7 @@ class ViewController: UIViewController {
         } catch {
             transferResult.text = "Failed to transfer asset: \(error.localizedDescription)"
         }
+         */
     }
 }
 

@@ -1,3 +1,12 @@
+#[macro_use]
+extern crate amplify;
+#[macro_use]
+extern crate amplify_derive;
+#[macro_use]
+extern crate log;
+#[macro_use]
+extern crate serde_json;
+
 use std::any::TypeId;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
@@ -13,24 +22,16 @@ use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;
 use rgb::lnpbp::bp::blind::OutpointReveal;
 use rgb::lnpbp::client_side_validation::Conceal;
-use rgb::lnpbp::rgb::Consignment;
-use rgb::lnpbp::rgb::{ContractId, FromBech32, Genesis};
+use rgb::lnpbp::rgb::{Consignment, ContractId, FromBech32, Genesis};
 
 use rgb::api::reply::SyncFormat;
 use rgb::fungible::{Asset, Invoice, Outpoint, OutpointCoins, SealCoins};
 use rgb::i9n::{Config, Runtime};
+use rgb::lnpbp::bitcoin::blockdata::transaction::ParseOutPointError;
+use rgb::lnpbp::strict_encoding::strict_decode;
 use rgb::rgbd::ContractName;
 use rgb::util::file::ReadWrite;
 use rgb::DataFormat;
-
-#[macro_use]
-extern crate amplify;
-
-#[macro_use]
-extern crate amplify_derive;
-
-#[macro_use]
-extern crate log;
 
 trait CReturnType: Sized + 'static {
     fn from_opaque(other: &COpaqueStruct) -> Result<&mut Self, RequestError> {
@@ -268,10 +269,10 @@ fn _run_rgb_embedded(
     let fungible_pub_endpoint = s!("inproc://fungible-pub");
 
     let config = Config {
-        network: network,
-        stash_rpc_endpoint: stash_rpc_endpoint,
-        stash_pub_endpoint: stash_pub_endpoint,
-        fungible_pub_endpoint: fungible_pub_endpoint,
+        network,
+        stash_rpc_endpoint,
+        stash_pub_endpoint,
+        fungible_pub_endpoint,
         contract_endpoints: contract_endpoints
             .into_iter()
             .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v.parse()?)) })
@@ -355,7 +356,16 @@ fn _issue(
 
     let name = ptr_to_string(name)?;
 
-    let description: Option<String> = Some(ptr_to_string(description)?);
+    let description = if description.is_null() {
+        None
+    } else {
+        let description = ptr_to_string(description)?;
+        if description.is_empty() {
+            None
+        } else {
+            Some(description)
+        }
+    };
 
     let allocations: Vec<OutpointCoins> =
         serde_json::from_str(&ptr_to_string(allocations)?)?;
@@ -369,13 +379,13 @@ fn _issue(
     let epoch: Option<OutPoint> = serde_json::from_str(&ptr_to_string(epoch)?)?;
 
     debug!(
-        "IssueArgs {{ network: {}, ticker: {}, name: {}, description: {}, \
+        "Issue: {{ network: {}, ticker: {}, name: {}, description: {:?}, \
         precision: {}, allocations: {:?}, inflation: {:?}, renomination: {:?}, \
         epoch: {:?} }}",
         network,
         ticker,
         name,
-        description.clone().unwrap_or_default(),
+        description,
         precision,
         allocations,
         inflation,
@@ -439,8 +449,15 @@ fn _transfer(
 
     let inputs: Vec<OutPoint> = serde_json::from_str(&ptr_to_string(inputs)?)?;
 
-    let allocate: Vec<SealCoins> =
-        serde_json::from_str(&ptr_to_string(allocate)?)?;
+    let a: Vec<String> = serde_json::from_str(&ptr_to_string(allocate)?)?;
+    let mut allocate: Vec<SealCoins> = Vec::with_capacity(a.len());
+    for entry in a {
+        allocate.push(
+            SealCoins::from_str(&entry).map_err(|_| {
+                RequestError::Outpoint(ParseOutPointError::Format)
+            })?,
+        );
+    }
 
     let c_invoice = unsafe { CStr::from_ptr(invoice) };
     let invoice = Invoice::from_str(c_invoice.to_str()?)?;
@@ -569,20 +586,27 @@ fn _invoice(
     amount: c_double,
     outpoint: *const c_char,
 ) -> Result<String, RequestError> {
-    let asset_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
+    let contract_id = ContractId::from_str(&ptr_to_string(asset_id)?)?;
 
     let outpoint = OutPoint::from_str(&ptr_to_string(outpoint)?)?;
 
     let outpoint_reveal = OutpointReveal::from(outpoint);
     let invoice = Invoice {
-        contract_id: asset_id,
+        contract_id,
         outpoint: Outpoint::BlindedUtxo(outpoint_reveal.conceal()),
-        amount: amount,
+        amount,
     };
 
-    debug!("Created invoice: {}", invoice);
+    debug!(
+        "Created invoice {}, blinding factor {}",
+        invoice, outpoint_reveal.blinding
+    );
 
-    Ok(invoice.to_string())
+    let json_response = json!({
+        "invoice": invoice.to_string(),
+        "secret": outpoint_reveal.blinding
+    });
+    Ok(json_response.to_string())
 }
 
 #[no_mangle]
@@ -597,9 +621,8 @@ pub extern "C" fn invoice(
 fn _list_assets(runtime: &COpaqueStruct) -> Result<String, RequestError> {
     let runtime = Runtime::from_opaque(runtime)?;
 
-    let SyncFormat(_data_format, data) =
-        runtime.list_assets(DataFormat::Json)?;
-    let assets: Vec<Asset> = serde_json::from_slice(&data)?;
+    let SyncFormat(_, data) = runtime.list_assets(DataFormat::StrictEncode)?;
+    let assets: Vec<Asset> = strict_decode(&data)?;
 
     let json_response = serde_json::to_string(&assets)?;
     Ok(json_response)
@@ -619,7 +642,7 @@ fn _outpoint_assets(
     let c_outpoint = unsafe { CStr::from_ptr(outpoint) };
     let outpoint = OutPoint::from_str(c_outpoint.to_str()?)?;
 
-    debug!("OutpointAssets {{ outpoint: {} }}", outpoint);
+    debug!("Listing assets for {}", outpoint);
 
     let response = runtime.outpoint_assets(outpoint)?;
     let json_response = serde_json::to_string(&response)?;

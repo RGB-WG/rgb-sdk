@@ -1,5 +1,5 @@
 {
-  "name": "nodejs",
+  "name": "rgb",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "preinstall": "cargo build --manifest-path ../../rust-lib/Cargo.toml && swig -javascript -node -c++ swig.i",
     "install": "node ./node_modules/node-gyp/bin/node-gyp.js rebuild"
   },
-  "author": "",
+  "author": "LNP/BP Standards Association",
   "license": "MIT",
   "dependencies": {
     "node-gyp": "^7.1.0"

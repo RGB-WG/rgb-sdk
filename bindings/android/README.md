@@ -8,6 +8,8 @@ In order to build Android bindings, from the project root follow the
 Both instructions will generate the artifacts (`library-debug.aar` and
 `library-release.aar`) in `bindings/android/library/build/outputs/aar/`.
 
+NB: Build process can't happen on MacOS since it lacks necessary rust components
+
 ### Local
 
 * Install dependencies: bash, cargo nightly, cmake, g++, git, libpcre3-dev, make, openjdk-11-jdk, rustc nightly, rustup, swig 4.0

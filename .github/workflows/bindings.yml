@@ -47,7 +47,7 @@ jobs:
           yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
           rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-androideabi i686-linux-android
-          cd $GITHUB_WORKSPACE/ffi/android
+          cd $GITHUB_WORKSPACE/bindings/android
           ./gradlew build
   ios:
     runs-on: ${{ matrix.os }}
@@ -100,7 +100,7 @@ jobs:
       - name: Build bindings
         run: |
           sudo apt-get install -y node-gyp
-          cd $GITHUB_WORKSPACE/ffi/npm
+          cd $GITHUB_WORKSPACE/bindings/npm
           npm install
   python:
     runs-on: ${{ matrix.os }}
@@ -129,5 +129,5 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Build bindings
         run: |
-          cd $GITHUB_WORKSPACE/ffi/python
+          cd $GITHUB_WORKSPACE/bindings/python
           python3 setup.py build_ext

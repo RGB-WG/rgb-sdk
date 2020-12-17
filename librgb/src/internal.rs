@@ -1,8 +1,8 @@
 // RGB C bindings library (librgb)
-// Written in 2019 by
+// Written in 2020 by
 //     Alekos Filini,
 //     Dr. Maxim Orlovsky <orlovsky@pandoracore.com>,
-//     Zoe Faltiba
+//     Zoe Faltibà <zoefaltiba@gmail.com>
 //
 // To the extent possible under law, the author(s) have dedicated all
 // copyright and related and neighboring rights to this software to

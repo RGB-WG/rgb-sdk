@@ -1,9 +1,11 @@
 [package]
 name = "librgb"
-version = "0.2.0"
+version = "0.2.0-rc.1"
 description = "C-language bindings for RGB (smart contracts on Bitcoin & Lightning network)"
 authors = ["Dr Maxim Orlovsky <orlovsky@pandoracore.com>",
+           "Alekos Filini",
            "Zoe Faltibà <zoefaltiba@gmail.com>"]
+license = "MIT"
 edition = "2018"
 build = "build.rs"
 

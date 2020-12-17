@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import java.util.HashSet;
 import java.util.List;
 
-public static class OutPoint {
+public class OutPoint {
     private final Integer vout;
     private final String txid;
 

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public static class OutpointCoins {
+public class OutpointCoins {
     private final Long coins;
     private final String outpoint;
 

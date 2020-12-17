@@ -3,6 +3,7 @@ package org.lnpbp.rgb;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.lnpbp.rgb.model.OutPoint;
 import org.lnpbp.rgb.model.OutpointCoins;
 import org.lnpbp.rgb_autogen.COpaqueStruct;
 import org.lnpbp.rgb_autogen.rgb;

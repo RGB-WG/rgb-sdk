@@ -18,6 +18,17 @@ public struct RGBError: Error {
         let cstr = res.inner.ptr.load(as: UnsafePointer<CChar>.self)
         self.message = String(cString: cstr)
     }
+
+    init!(_ res: CResultString) {
+        guard res.result.rawValue != 0 else {
+            return nil
+        }
+        self.message = String(cString: res.inner)
+    }
+    
+    init(_ msg: String) {
+        self.message = msg
+    }
 }
 
 public enum Verbosity: UInt8 {
@@ -62,6 +73,20 @@ open class RGB20Controller {
             guard res.result.rawValue == 0 else {
                 throw RGBError(res)
             }
+        }
+    }
+    
+    open func listAssets() throws -> String {
+        try withUnsafePointer(to: self.client) { client in
+            let res = rgb_node_fungible_list_assets(client)
+            guard res.result.rawValue == 0 else {
+                throw RGBError(res)
+            }
+            guard let jsonString = String(utf8String: res.inner) else {
+                throw RGBError("Wrong node response (not JSON string)")
+            }
+            //try JSONSerialization.jsonObject(with: jsonString.data(using: .utf8), options: [])
+            return jsonString
         }
     }
 }

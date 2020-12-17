@@ -11,7 +11,8 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var issueResult: UILabel!
     @IBOutlet weak var transferResult: UILabel!
-    
+    @IBOutlet weak var listResult: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -57,6 +58,22 @@ class ViewController: UIViewController {
             transferResult.text = "Failed to transfer asset: \(error.localizedDescription)"
         }
          */
+    }
+    
+    @IBAction func onAssetList(_ sender: Any) {
+        guard let rgbController = (UIApplication.shared.delegate as! AppDelegate).rgbController else {
+            listResult.text = "RGB runtime failed to start"
+            return
+        }
+
+        do {
+            let assets = try rgbController.listAssets()
+            listResult.text = "\(assets)"
+        } catch {
+            listResult.text = "Failed to issue asset: \(error.localizedDescription)"
+            return
+        }
+
     }
 }
 

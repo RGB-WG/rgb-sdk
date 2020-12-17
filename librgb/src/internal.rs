@@ -14,12 +14,14 @@
 // If not, see <https://opensource.org/licenses/MIT>.
 
 use std::collections::HashMap;
-use std::env;
 use std::ffi::CStr;
 use std::os::raw::{c_char, c_double, c_uchar};
 use std::str::FromStr;
 
+#[cfg(not(target_os = "android"))]
 use log::LevelFilter;
+#[cfg(not(target_os = "android"))]
+use std::env;
 
 use rgb::lnpbp::bitcoin::OutPoint;
 use rgb::lnpbp::bp;

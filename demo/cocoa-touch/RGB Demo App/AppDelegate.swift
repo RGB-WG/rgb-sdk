@@ -12,12 +12,13 @@ import RGBKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    lazy var rgbController: RGBController? = {
-        let controller = RGBController()
-        if controller == nil {
-            print("Failed to start RGB")
+    lazy var rgbController: RGB20Controller? = {
+        do {
+            return try RGB20Controller()
+        } catch {
+            print("Failed to start RGB: \(error.localizedDescription)")
+            return nil
         }
-        return controller
     }()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

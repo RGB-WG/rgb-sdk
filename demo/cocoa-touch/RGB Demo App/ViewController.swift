@@ -22,34 +22,19 @@ class ViewController: UIViewController {
             return
         }
         
-        /*
-        let allocations = CoinAllocation(
-            coins: 100,
-            vout: 0,
-            txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4"
-        )
-        
-        // MARK: - Issue new asset
-        let args = IssueArgs(
-            network: "testnet",
-            ticker: "USDT",
-            name: "USD Tether",
-            description: nil,
-            issueStructure: "SingleIssue",
-            allocations: [allocations],
-            precision: 8,
-            pruneSeals: [],
-            dustLimit: 0
-        )
-        
         do {
-            try runtime.issueAsset(args)
+            try rgbController.createAsset(
+                ticker: "DEMO",
+                name: "Demo asset",
+                allocations: "[{ \"coins\": 100, \"outpoint\": \"0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4:1\" }]"
+            )
             issueResult.text = "Issued successfully"
         } catch {
             issueResult.text = "Failed to issue asset: \(error.localizedDescription)"
             return
         }
-        
+
+        /*
         // MARK: - Transfer asset
         do {
             let dataUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!

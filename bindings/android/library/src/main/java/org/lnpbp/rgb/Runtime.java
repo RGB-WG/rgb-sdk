@@ -21,7 +21,7 @@ public class Runtime {
         mapper = new ObjectMapper();
         this.network = network;
         try {
-            this.runtime = rgb.rgb_node_run(datadir, network, electrum, 3);
+            this.runtime = rgb.rgb_node_run(datadir, network, electrum, (byte) 3);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

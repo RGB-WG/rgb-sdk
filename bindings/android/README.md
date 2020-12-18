@@ -25,12 +25,14 @@ rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-android
 
 ### In docker
 
+Change to the root of the repository and run:
+
 ```bash
 docker build -f bindings/android/Dockerfile -t rgb-sdk-android .
-mkdir -p bindings/android/library/build/outputs/aar
+mkdir -p artifacts/android
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
     rgb-sdk-android \
-    -c 'cp /rgb-sdk/bindings/android/library/build/outputs/aar/*.aar /opt/mount/bindings/android/library/build/outputs/aar/'
+    -c 'cp /rgb-sdk/bindings/android/library/build/outputs/aar/*.aar /opt/mount/artifacts/android/'
 ```
 
 ## Usage

@@ -1039,7 +1039,7 @@ checksum = "1482821306169ec4d07f6aca392a4681f66c75c9918aa49641a2595db64053cb"
 
 [[package]]
 name = "librgb"
-version = "0.2.0-rc.1"
+version = "0.2.0-rc.2"
 dependencies = [
  "amplify",
  "amplify_derive",
@@ -1737,9 +1737,9 @@ dependencies = [
 
 [[package]]
 name = "rgb_node"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3cb7db217df4ccae45c5ccf8b352a195f740a5f52a4d8f6e07ed6c72fed38195"
+checksum = "f9eacab3efd1c0c42cb5d296a7cfbc62f7ceeea18189d81377576d68ceede50b"
 dependencies = [
  "amplify",
  "amplify_derive",

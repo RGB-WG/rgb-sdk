@@ -18,6 +18,7 @@
 **/node_modules
 **/package-lock.json
 **/swig_wrap.*
+**/*.framework
 
 # IDEs data
 **/*.swo

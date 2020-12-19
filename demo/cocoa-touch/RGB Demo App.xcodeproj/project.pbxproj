@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3063CD50258AE9D000368A28 /* RGBKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CD4F258AE9D000368A28 /* RGBKit.framework */; };
-		3063CD51258AE9D000368A28 /* RGBKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CD4F258AE9D000368A28 /* RGBKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3063CD51258AE9D000368A28 /* RGBKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CD4F258AE9D000368A28 /* RGBKit.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		30BC0AD42490F46F00C1ACED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BC0AD32490F46F00C1ACED /* AppDelegate.swift */; };
 		30BC0AD62490F46F00C1ACED /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BC0AD52490F46F00C1ACED /* SceneDelegate.swift */; };
 		30BC0AD82490F46F00C1ACED /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BC0AD72490F46F00C1ACED /* ViewController.swift */; };
@@ -17,30 +17,6 @@
 		30BC0AE02490F47000C1ACED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30BC0ADF2490F47000C1ACED /* Assets.xcassets */; };
 		30BC0AE32490F47000C1ACED /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30BC0AE12490F47000C1ACED /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		3063CD55258AE9D900368A28 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3063CD52258AE9D900368A28 /* RGBKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 3063CCD9258AB46700368A28;
-			remoteInfo = RGBKit;
-		};
-		3063CD58258AE9D900368A28 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3063CD52258AE9D900368A28 /* RGBKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3063CCDA258AB46700368A28;
-			remoteInfo = RGBKit;
-		};
-		3063CD62258AEABA00368A28 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3063CD41258AE88C00368A28 /* RGBKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3063CCDA258AB46700368A28;
-			remoteInfo = RGBKit;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		3063CD4C258AE89600368A28 /* Embed Frameworks */ = {
@@ -57,9 +33,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3063CD41258AE88C00368A28 /* RGBKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RGBKit.xcodeproj; path = ../../packages/xcode/RGBKit.xcodeproj; sourceTree = "<group>"; };
 		3063CD4F258AE9D000368A28 /* RGBKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RGBKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3063CD52258AE9D900368A28 /* RGBKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RGBKit.xcodeproj; path = "/Users/orlovsky/Repositories/lnpbp/rgb-sdk/packages/xcode/RGBKit.xcodeproj"; sourceTree = "<absolute>"; };
 		30BC0AD02490F46F00C1ACED /* RGB Demo App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RGB Demo App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		30BC0AD32490F46F00C1ACED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30BC0AD52490F46F00C1ACED /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -84,30 +58,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3063CD53258AE9D900368A28 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				3063CD59258AE9D900368A28 /* RGBKit.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		3063CD5F258AEABA00368A28 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				3063CD63258AEABA00368A28 /* RGBKit.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		30BC0AC72490F46F00C1ACED = {
 			isa = PBXGroup;
 			children = (
-				3063CD41258AE88C00368A28 /* RGBKit.xcodeproj */,
 				30BC0AD22490F46F00C1ACED /* RGB Demo App */,
 				30BC0AD12490F46F00C1ACED /* Products */,
 				30BC0AEB2490F70000C1ACED /* Frameworks */,
-				3063CD52258AE9D900368A28 /* RGBKit.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,7 +114,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				3063CD56258AE9D900368A28 /* PBXTargetDependency */,
 			);
 			name = "RGB Demo App";
 			productName = "RGB Demo App";
@@ -193,39 +148,12 @@
 			);
 			productRefGroup = 30BC0AD12490F46F00C1ACED /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 3063CD5F258AEABA00368A28 /* Products */;
-					ProjectRef = 3063CD41258AE88C00368A28 /* RGBKit.xcodeproj */;
-				},
-				{
-					ProductGroup = 3063CD53258AE9D900368A28 /* Products */;
-					ProjectRef = 3063CD52258AE9D900368A28 /* RGBKit.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				30BC0ACF2490F46F00C1ACED /* RGB Demo App */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		3063CD59258AE9D900368A28 /* RGBKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = RGBKit.framework;
-			remoteRef = 3063CD58258AE9D900368A28 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		3063CD63258AEABA00368A28 /* RGBKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = RGBKit.framework;
-			remoteRef = 3063CD62258AEABA00368A28 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		30BC0ACE2490F46F00C1ACED /* Resources */ = {
@@ -253,14 +181,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		3063CD56258AE9D900368A28 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = RGBKit;
-			targetProxy = 3063CD55258AE9D900368A28 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		30BC0AD92490F46F00C1ACED /* Main.storyboard */ = {
@@ -414,7 +334,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.RGB-Demo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -436,7 +356,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.RGB-Demo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

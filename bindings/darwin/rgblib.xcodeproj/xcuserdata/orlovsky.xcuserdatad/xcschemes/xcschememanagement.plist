@@ -9,10 +9,28 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>rgblib.xcscheme_^#shared#^_</key>
+		<key>rgblib ios.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
+		</dict>
+		<key>rgblib macos.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>3063CCB5258AAE5D00368A28</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3093BB25258E967600C5E8E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

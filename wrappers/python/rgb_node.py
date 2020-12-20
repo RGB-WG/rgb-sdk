@@ -7,23 +7,28 @@ sys.path.insert(1, '../../bindings/python')
 from rgb import *
 
 class RGBNode:
-    def __init__(self, network, datadir, electrum, verbosity):
-        self.network = network or "testnet"
+    def __init__(self, network="testnet", datadir="/tmp/rgb-node/", verbosity=0):
+        electrum_port ={
+            "testnet": "60001",
+            "bitcoin": "50001",
+            "signet": "60601"
+        }
+        self.network = network
         self.datadir = datadir
-        self.electrum = electrum
+        self.electrum = "pandora.network:" + electrum_port[network]
 
         self.runtime = rgb_node_run(self.datadir, self.network, self.electrum, verbosity)
 
     def issue(self, ticker, name, description, precision, allocations, inflation, renomination, epoch):
-        return rgb_node_fungible_issue(runtime=self.runtime,\
-                                        network=self.network,\
-                                        ticker=ticker,\
-                                        name=name,\
-                                        description=description,\
-                                        precision=precision,\
-                                        allocations=allocations,\
-                                        inflation=inflation,\
-                                        renomination=renomination,\
+        return rgb_node_fungible_issue(runtime=self.runtime,
+                                        network=self.network,
+                                        ticker=ticker,
+                                        name=name,
+                                        description=description,
+                                        precision=precision,
+                                        allocations=allocations,
+                                        inflation=inflation,
+                                        renomination=renomination,
                                         epoch=epoch)
 
     def listAssets(self):

@@ -12,7 +12,6 @@ from json import dumps
 
 config = {
     'network': 'testnet',
-    'electrum': 'pandora.network:60001',
     'datadir': '/tmp/rgb-node/'
 }
 
@@ -55,7 +54,7 @@ asset_id = 'rgb1scxapanh6jj9ceapvxgdzr68jumjdu44ezt3ewy4h6ahz8hkd0fs6utwne'
 
 try:
     # Start the node with config
-    node = RGBNode(config['network'], config['datadir'], config["electrum"], 0)
+    node = RGBNode(config['network'], config['datadir'])
 
     # Issue an asset with asset related data
     node.issue(issue_data['ticker'], issue_data['name'],

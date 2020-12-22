@@ -5,15 +5,13 @@ RGB Python demo application
 """
 
 import sys
-sys.path.insert(1, '../../bindings/python')
-from rgb import *
-
+sys.path.insert(1, '../../wrappers/python')
+from rgb_node import RGBNode
 from json import dumps
 
 
 config = {
     'network': 'testnet',
-    'electrum': 'pandora.network:60001',
     'datadir': '/tmp/rgb-node/'
 }
 
@@ -55,26 +53,34 @@ asset_id = 'rgb1scxapanh6jj9ceapvxgdzr68jumjdu44ezt3ewy4h6ahz8hkd0fs6utwne'
 
 
 try:
-    runtime = rgb_node_run(
-        config['datadir'],
-        config['network'],
-        config['electrum'],
-        3)
-    rgb_node_fungible_issue(runtime, issue_data['network'], issue_data['ticker'], issue_data['name'],
-              issue_data['description'], issue_data['precision'],
-              dumps(issue_data['allocations']), dumps(issue_data['inflation']),
-              dumps(issue_data['renomination']), dumps(issue_data['epoch']))
-    assets = rgb_node_fungible_list_assets(runtime)
-    print('assets: {}'.format(assets))
-    """
-    invoice = rgb_node_fungible_invoice(asset_id, 66.6, input_outpoint)
+    # Start the node with config
+    node = RGBNode(config['network'], config['datadir'])
+
+    # Issue an asset with asset related data
+    node.issue(issue_data['ticker'], issue_data['name'],
+            issue_data['description'], issue_data['precision'],
+            dumps(issue_data['allocations']), dumps(issue_data['inflation']),
+            dumps(issue_data['renomination']), dumps(issue_data['epoch']))
+    # Get issued assets
+    assets = node.listAssets()
+    print("Assets: {}".format(assets))
+
+    # Get invoice
+    invoice = node.invoice(asset_id, 66.6, input_outpoint)
+    print("\n----------------------------- \n")
     print('invoice: {}'.format(invoice))
-    assets = rgb_node_fungible_outpoint_assets(runtime, input_outpoint)
+
+    # Get assets associated with outpoint
+    assets = node.outpointAssets(input_outpoint)
+    print("\n----------------------------- \n")
     print("asset list for '{}': {}".format(input_outpoint, assets))
-    rgb_node_fungible_import_asset(runtime, asset_genesis)
-    genesis = rgb_node_fungible_export_asset(runtime, asset_id)
+
+    # Import an asset and print its genesis
+    node.importAsset(asset_genesis)
+    genesis = node.exportAsset(asset_id)
+    print("\n----------------------------- \n")
     print('genesis: {}'.format(genesis))
-    """
+
 except Exception as e:
     print('ERR: ' + str(e))
     sys.exit(1)

@@ -20,12 +20,12 @@ npm install
 ### In docker
 
 ```bash
-docker build -f bindings/npmnpm/Dockerfile -t rgb-sdk-npm .
+docker build -f bindings/npm/Dockerfile -t rgb-sdk-npm .
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
     rgb-sdk-npm \
     -c 'mkdir -p /opt/mount/librgb/target/release /opt/mount/bindings/npm/build/Release \
-    && cp /rgb-sdk/target/release/librgb.so /opt/mount/librgb/target/release/librgb.so \
-    && cp /rgb-sdk/rgb.node /opt/mount/bindings/npm/build/Release/rgb.node'
+    && cp /rgb-sdk/librgb/target/release/librgb.so /opt/mount/librgb/target/release/librgb.so \
+    && cp /rgb-sdk/bindings/npm/build/Release/rgblib.node /opt/mount/bindings/npm/build/Release/rgblib.node'
 ```
 
 ## Usage

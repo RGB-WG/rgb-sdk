@@ -14,10 +14,10 @@ then follow the instructions specific to your language binding of choice.
 ### Language bindings
 
 The following bindings are available:
-- [Android](/ffi/android)
-- [iOS](/ffi/swift)
-- [Node.js](/ffi/npm)
-- [Python](/ffi/python)
+- Android
+- iOS
+- Node.js
+- Python
 
 ## Developer guidelines
 

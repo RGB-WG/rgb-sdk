@@ -11,9 +11,9 @@
 		3063CD30258ABA3400368A28 /* librgb.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CD19258AB9A800368A28 /* librgb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3093BB3D258E9C2800C5E8E8 /* rgblib.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CCB9258AAE5D00368A28 /* rgblib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3093BB42258E9C3200C5E8E8 /* librgb.h in Headers */ = {isa = PBXBuildFile; fileRef = 3063CD19258AB9A800368A28 /* librgb.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3093BB47258E9C7C00C5E8E8 /* librgb.a in Resources */ = {isa = PBXBuildFile; fileRef = 3063CCE8258AB5D200368A28 /* librgb.a */; platformFilter = ios; };
+		3093BB47258E9C7C00C5E8E8 /* librgb.a in Resources */ = {isa = PBXBuildFile; fileRef = 3063CCE8258AB5D200368A28 /* librgb.a */; };
 		3093BB48258E9C8000C5E8E8 /* librgb.a in Resources */ = {isa = PBXBuildFile; fileRef = 3093BB0C258E95A900C5E8E8 /* librgb.a */; };
-		3093BB4C258E9DC100C5E8E8 /* librgb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCE8258AB5D200368A28 /* librgb.a */; platformFilter = ios; };
+		3093BB4C258E9DC100C5E8E8 /* librgb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3063CCE8258AB5D200368A28 /* librgb.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -383,6 +383,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -410,12 +411,14 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.rgblib-ios";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -437,12 +440,15 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.rgblib-ios";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 			};
 			name = Release;
 		};

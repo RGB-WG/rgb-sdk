@@ -3,7 +3,7 @@ package org.lnpbp.demoapp;
 import android.app.Application;
 import android.util.Log;
 
-import org.lnpbp.rgbnode.Runtime;
+import org.lnpbp.rgb.Runtime;
 
 import java.util.HashMap;
 

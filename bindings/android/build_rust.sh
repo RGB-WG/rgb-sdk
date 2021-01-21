@@ -27,16 +27,16 @@ mkdir -p $JNILIBS/arm64-v8a $JNILIBS/x86_64 $JNILIBS/armeabi-v7a $JNILIBS/x86
 
 aarch64-linux-android21-clang++ -static-libstdc++ swig_wrap.cxx -L$RUSTLIB/target/aarch64-linux-android/debug/ -lrgb_node -o $JNILIBS/arm64-v8a/librgb_node.so -fPIC
 cp -v $RUSTLIB/target/aarch64-linux-android/debug/librgb_node.so $JNILIBS/arm64-v8a/
-cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/arm64-v8a/libc++_shared.so $JNILIBS/arm64-v8a/
+# cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/arm64-v8a/libc++_shared.so $JNILIBS/arm64-v8a/
 
 x86_64-linux-android21-clang++ -static-libstdc++ swig_wrap.cxx -L$RUSTLIB/target/x86_64-linux-android/debug/ -lrgb_node -o $JNILIBS/x86_64/librgb_node.so -fPIC
 cp -v $RUSTLIB/target/x86_64-linux-android/debug/librgb_node.so $JNILIBS/x86_64/
-cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/x86_64/libc++_shared.so $JNILIBS/x86_64/
+# cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/x86_64/libc++_shared.so $JNILIBS/x86_64/
 
 armv7a-linux-androideabi21-clang++ -static-libstdc++ swig_wrap.cxx -L$RUSTLIB/target/armv7-linux-androideabi/debug/ -lrgb_node -o $JNILIBS/armeabi-v7a/librgb_node.so -fPIC
 cp -v $RUSTLIB/target/armv7-linux-androideabi/debug/librgb_node.so $JNILIBS/armeabi-v7a/
-cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_shared.so $JNILIBS/armeabi-v7a/
+# cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a/libc++_shared.so $JNILIBS/armeabi-v7a/
 
 i686-linux-android21-clang++ -static-libstdc++ swig_wrap.cxx -L$RUSTLIB/target/i686-linux-android/debug/ -lrgb_node -o $JNILIBS/x86/librgb_node.so -fPIC
 cp -v $RUSTLIB/target/i686-linux-android/debug/librgb_node.so $JNILIBS/x86/
-cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/x86/libc++_shared.so $JNILIBS/x86/
+# cp -v $NDK_HOME/sources/cxx-stl/llvm-libc++/libs/x86/libc++_shared.so $JNILIBS/x86/

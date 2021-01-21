@@ -12,8 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.lnpbp.rgbnode.Runtime;
-import org.lnpbp.rgbnode.model.OutpointCoins;
+import org.lnpbp.rgb.Runtime;
+import org.lnpbp.rgb.model.OutpointCoins;
 
 import java.util.ArrayList;
 import java.util.Arrays;

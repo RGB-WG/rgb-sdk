@@ -5,7 +5,7 @@ import android.util.Log;
 
 import org.lnpbp.rgb.Runtime;
 
-import java.util.HashMap;
+import com.getkeepsafe.relinker.ReLinker;
 
 public class DemoApp extends Application {
 
@@ -22,7 +22,8 @@ public class DemoApp extends Application {
         final String libName = "rgb_node";
         Log.i(TAG, String.format("Loading '%s' library", libName));
         try {
-            System.loadLibrary(libName);
+            ReLinker.loadLibrary(DemoApp.this, "libc++_shared");
+            ReLinker.loadLibrary(DemoApp.this, libName);
         } catch (UnsatisfiedLinkError e) {
             Log.e(TAG, String.format("Error loading '%s' library: %s", libName, e.toString()));
         }

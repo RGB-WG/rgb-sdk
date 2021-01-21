@@ -99,7 +99,7 @@ pub struct CResult {
 
 impl<T: 'static, E> From<Result<T, E>> for CResult
 where
-    E: std::fmt::Debug,
+    E: std::error::Error,
 {
     fn from(other: Result<T, E>) -> Self {
         match other {
@@ -121,11 +121,11 @@ pub struct CResultString {
     inner: *const c_char,
 }
 
-impl From<Result<String, RequestError>> for CResultString
+impl<E> From<Result<String, E>> for CResultString
 where
-    RequestError: std::fmt::Debug,
+    E: std::error::Error,
 {
-    fn from(other: Result<String, RequestError>) -> Self {
+    fn from(other: Result<String, E>) -> Self {
         match other {
             Ok(d) => CResultString {
                 result: CResultValue::Ok,

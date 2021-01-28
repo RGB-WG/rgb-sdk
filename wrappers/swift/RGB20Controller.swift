@@ -11,13 +11,38 @@ import rgblib
 public struct RGBError: Error {
     let message: String
     
+    //Temporary solution for getting a string from a pointer without knowing the byte count
+    private static func extractString(_ ptr: UnsafeRawPointer) -> String {
+        var message = ""
+        
+        var byteCount: Int = 1
+        while byteCount < 1000 {
+            let data = Data(bytes: ptr, count: byteCount)
+            guard let m = String(data: data, encoding: String.Encoding.utf8) else {
+                //If we've gone too far and string is nil
+                break
+            }
+            
+            byteCount += 1
+            message = m
+        }
+        
+        return message
+    }
+    
     init!(_ res: CResult) {
         guard res.result.rawValue != 0 else {
             return nil
         }
-        let cstr = res.inner.ptr.load(as: UnsafePointer<CChar>.self)
-        self.message = String(cString: cstr)
+            
+        //TODO Real solution is this but we need the real byteCount returned as part of COpaqueStruct
+//        let byteCount =
+//        let data = Data(bytes: res.inner.ptr, count: byteCount)
+//        self.message = String(data: data, encoding: String.Encoding.utf8) ?? "Unknown RGB Error"
+        
+        self.message = RGBError.extractString(res.inner.ptr)
     }
+    
 
     init!(_ res: CResultString) {
         guard res.result.rawValue != 0 else {
@@ -28,6 +53,12 @@ public struct RGBError: Error {
     
     init(_ msg: String) {
         self.message = msg
+    }
+}
+
+extension RGBError: LocalizedError {
+    public var errorDescription: String? {
+        return self.message
     }
 }
 

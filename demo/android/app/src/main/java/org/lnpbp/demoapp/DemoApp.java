@@ -19,7 +19,7 @@ public class DemoApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        final String libName = "rgb_node";
+        final String libName = "rgb";
         Log.i(TAG, String.format("Loading '%s' library", libName));
         try {
             System.loadLibrary(libName);

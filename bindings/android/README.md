@@ -25,10 +25,9 @@ rustup target add aarch64-linux-android x86_64-linux-android armv7-linux-android
 
 ### In docker
 
-Change to the root of the repository and run:
-
+Change to the root of the repository ,add username to 'docker' group if it isn't there and run:
 ```bash
-docker build -f bindings/android/Dockerfile -t rgb-sdk-android .
+sudo docker build -f bindings/android/Dockerfile -t rgb-sdk-android .
 mkdir -p artifacts/android
 docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
     rgb-sdk-android \
@@ -38,5 +37,9 @@ docker run --rm -v $(pwd):/opt/mount --entrypoint bash \
 ## Usage
 
 To try the generated library, you can use:
-- [android demo](/demo/android)
+- [android demo](/demo/android)  
+to make it work use say
+`rsync -pEAoXg ./artifacts/android/library-debug.aar ./demo/android/app/libs/`  
+from repo base  
+  
 - [react-native demo](/demo/react-native)

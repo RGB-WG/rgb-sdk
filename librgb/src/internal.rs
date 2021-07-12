@@ -41,13 +41,12 @@ use rgb::DataFormat;
 use crate::error::RequestError;
 use crate::helpers::*;
 
-pub(crate) fn _connect_rgb(
+pub(crate) fn _rgb_node_connect(
     datadir: *const c_char,
     network: *const c_char,
     stash_rpc_endpoint: *const c_char,
     contract_endpoints: *const c_char,
     electrum: *const c_char,
-    verbosity: u8,
 ) -> Result<Runtime, RequestError> {
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
@@ -56,79 +55,66 @@ pub(crate) fn _connect_rgb(
     let stash_rpc_endpoint = c_stash_rpc_endpoint.to_str()?.to_string();
 
     let c_electrum = unsafe { CStr::from_ptr(electrum) };
-    let electrum = c_electrum.to_str()?.to_string();
+    let electrum_server = c_electrum.to_str()?.to_string();
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
 
     let c_datadir = unsafe { CStr::from_ptr(datadir) };
-    let datadir = c_datadir.to_str()?.to_string();
+    let data_dir = c_datadir.to_str()?.to_string();
 
     let config = Config {
         network,
         stash_rpc_endpoint,
-        data_dir: datadir,
-        contract_endpoints: contract_endpoints
-            .into_iter()
-            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v)) })
-            .collect::<Result<_, _>>()?,
-        electrum_server: electrum,
+        data_dir,
+        contract_endpoints,
+        electrum_server,
         run_embedded: false,
-        verbose: verbosity,
+        verbose: 4,
         ..Default::default()
     };
 
     info!("{:?}", config);
 
-    let runtime = Runtime::init(config)?;
-
-    Ok(runtime)
+    Ok(Runtime::init(config)?)
 }
 
-pub(crate) fn _run_rgb_embedded(
+pub(crate) fn _rgb_node_run(
     datadir: *const c_char,
     network: *const c_char,
     electrum: *const c_char,
-    verbosity: u8,
 ) -> Result<Runtime, RequestError> {
     let c_network = unsafe { CStr::from_ptr(network) };
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
     let c_datadir = unsafe { CStr::from_ptr(datadir) };
-    let datadir = c_datadir.to_str()?.to_string();
+    let data_dir = c_datadir.to_str()?.to_string();
 
     let c_electrum = unsafe { CStr::from_ptr(electrum) };
-    let electrum = c_electrum.to_str()?.to_string();
+    let electrum_server = c_electrum.to_str()?.to_string();
 
-    let contract_endpoints: HashMap<ContractName, String> =
-        [(ContractName::Fungible, s!("inproc://fungible-rpc"))]
-            .iter()
-            .cloned()
-            .collect();
+    let contract_endpoints: HashMap<ContractName, String> = map! {
+        ContractName::Fungible => s!("inproc://fungible-rpc")
+    };
     let stash_rpc_endpoint = s!("inproc://stash-rpc");
     let stash_pub_endpoint = s!("inproc://stash-pub");
     let fungible_pub_endpoint = s!("inproc://fungible-pub");
 
     let config = Config {
         network,
-        data_dir: datadir,
+        data_dir,
         stash_rpc_endpoint,
         stash_pub_endpoint,
         fungible_pub_endpoint,
-        contract_endpoints: contract_endpoints
-            .into_iter()
-            .map(|(k, v)| -> Result<_, RequestError> { Ok((k, v.parse()?)) })
-            .collect::<Result<_, _>>()?,
-        electrum_server: electrum,
+        contract_endpoints,
+        electrum_server,
         run_embedded: true,
-        verbose: verbosity,
+        verbose: 4,
     };
 
     info!("{:?}", config);
 
-    let runtime = Runtime::init(config)?;
-
-    Ok(runtime)
+    Ok(Runtime::init(config)?)
 }
 
 #[cfg(target_os = "android")]

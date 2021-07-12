@@ -3,6 +3,8 @@
 #include "../../librgb/librgb.h"
 %}
 
+%typemap(jni) unsigned char "jbyte"
+%typemap(jtype) unsigned char "byte"
 %typemap(jstype) unsigned char "byte"
 
 %typemap(jstype) CResult "COpaqueStruct"

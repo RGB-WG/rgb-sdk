@@ -1,6 +1,6 @@
 [package]
-name = "librgb"
-version = "0.2.0-rc.2"
+name = "librgb_node"
+version = "0.2.0-rc.3"
 description = "C-language bindings for RGB (smart contracts on Bitcoin & Lightning network)"
 authors = ["Dr Maxim Orlovsky <orlovsky@pandoracore.com>",
            "Alekos Filini",
@@ -11,7 +11,7 @@ build = "build.rs"
 
 [lib]
 crate-type = ["staticlib", "cdylib"]
-name = "rgb"
+name = "rgb_node"
 
 [build-dependencies]
 cbindgen = "^0.14"

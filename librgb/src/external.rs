@@ -23,19 +23,17 @@ pub extern "C" fn rgb_node_connect(
     stash_rpc_endpoint: *const c_char,
     contract_endpoints: *const c_char,
     electrum: *const c_char,
-    verbosity: c_uchar,
 ) -> CResult {
     _start_logger();
 
     info!("Connecting RGB node...");
 
-    _connect_rgb(
+    _rgb_node_connect(
         datadir,
         network,
         stash_rpc_endpoint,
         contract_endpoints,
         electrum,
-        verbosity,
     )
     .into()
 }
@@ -45,13 +43,12 @@ pub extern "C" fn rgb_node_run(
     datadir: *const c_char,
     network: *const c_char,
     electrum: *const c_char,
-    verbosity: c_uchar,
 ) -> CResult {
     _start_logger();
 
     info!("Running embedded RGB node...");
 
-    _run_rgb_embedded(datadir, network, electrum, verbosity).into()
+    _rgb_node_run(datadir, network, electrum).into()
 }
 
 #[no_mangle]
